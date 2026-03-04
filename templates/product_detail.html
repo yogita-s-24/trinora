@@ -1,0 +1,320 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} – Trinora Fine Jewellery{% endblock %}
+{% block meta_description %}{{ product.description|truncatewords:20 }}{% endblock %}
+
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-2 text-xs text-gray-400 mb-8">
+        <a href="{% url 'home' %}" class="hover:text-black transition-colors">Home</a>
+        <span>/</span>
+        <a href="{% url 'products' %}" class="hover:text-black transition-colors">Shop</a>
+        <span>/</span>
+        <a href="{% url 'products' %}?category={{ product.category.slug }}" class="hover:text-black transition-colors">{{ product.category.name }}</a>
+        <span>/</span>
+        <span class="text-black">{{ product.name }}</span>
+    </nav>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+
+        <!-- Gallery -->
+        <div data-animate="fade-right">
+            <!-- Main Image -->
+            <div class="aspect-square overflow-hidden bg-gray-100 mb-3 relative">
+                <img id="mainImg" src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+                {% if product.is_on_sale %}
+                <span class="absolute top-4 left-4 bg-black text-white text-xs px-3 py-1 tracking-wider uppercase">Sale</span>
+                {% endif %}
+            </div>
+            <!-- Thumbnails -->
+            {% if product.image2 or product.image3 %}
+            <div class="flex gap-2">
+                <button onclick="setMainImg('{{ product.image.url }}', this)" class="thumb-btn w-20 h-20 overflow-hidden border-2 border-black flex-shrink-0">
+                    <img src="{{ product.image.url }}" alt="" class="w-full h-full object-cover">
+                </button>
+                {% if product.image2 %}
+                <button onclick="setMainImg('{{ product.image2.url }}', this)" class="thumb-btn w-20 h-20 overflow-hidden border-2 border-transparent hover:border-gray-300 flex-shrink-0 transition-colors">
+                    <img src="{{ product.image2.url }}" alt="" class="w-full h-full object-cover">
+                </button>
+                {% endif %}
+                {% if product.image3 %}
+                <button onclick="setMainImg('{{ product.image3.url }}', this)" class="thumb-btn w-20 h-20 overflow-hidden border-2 border-transparent hover:border-gray-300 flex-shrink-0 transition-colors">
+                    <img src="{{ product.image3.url }}" alt="" class="w-full h-full object-cover">
+                </button>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Product Info -->
+        <div class="py-2" data-animate="fade-left">
+            <p class="text-xs tracking-[0.25em] uppercase text-gray-400 mb-2">{{ product.category.name }}</p>
+            <h1 class="font-heading text-3xl md:text-4xl leading-tight mb-4">{{ product.name }}</h1>
+
+            <!-- Price -->
+            <div class="flex items-center gap-3 mb-4">
+                {% if product.is_on_sale %}
+                <span class="text-2xl font-bold">₹{{ product.sale_price }}</span>
+                <span class="text-lg text-gray-400 line-through">₹{{ product.price }}</span>
+                <span class="bg-black text-white text-xs px-2 py-0.5 tracking-wider uppercase">Sale</span>
+                {% else %}
+                <span class="text-2xl font-bold">₹{{ product.price }}</span>
+                {% endif %}
+            </div>
+
+            <!-- Stock & Material -->
+            <div class="flex items-center gap-4 mb-5 text-sm">
+                {% if product.in_stock %}
+                <span class="flex items-center gap-1.5 text-green-600">
+                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>In Stock
+                </span>
+                {% else %}
+                <span class="flex items-center gap-1.5 text-red-500">
+                    <span class="w-2 h-2 bg-red-500 rounded-full"></span>Out of Stock
+                </span>
+                {% endif %}
+                {% if product.material %}
+                <span class="text-gray-400">·</span>
+                <span class="text-gray-600">{{ product.material }}</span>
+                {% endif %}
+            </div>
+
+            <!-- Description -->
+            <p class="text-gray-600 text-sm leading-relaxed mb-6 border-t border-gray-100 pt-5">{{ product.description }}</p>
+
+            <!-- Quantity + Add to Bag -->
+            {% if product.in_stock %}
+            <div class="mb-4">
+                <form id="addToCartForm" method="post" action="{% url 'add_to_cart' product.id %}">
+                    {% csrf_token %}
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="flex items-center border border-gray-200">
+                            <button type="button" onclick="changeQty(-1)" class="w-10 h-10 flex items-center justify-center hover:bg-gray-100 transition-colors text-lg">–</button>
+                            <input type="number" id="qtyInput" name="quantity" value="1" min="1" max="10" class="w-12 h-10 text-center text-sm font-medium border-x border-gray-200 outline-none">
+                            <button type="button" onclick="changeQty(1)" class="w-10 h-10 flex items-center justify-center hover:bg-gray-100 transition-colors text-lg">+</button>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <button type="submit" id="addToCartBtn" class="flex-1 bg-black text-white py-4 text-xs font-bold tracking-widest uppercase hover:bg-gray-800 transition-colors">
+                            Add to Bag
+                        </button>
+                        <button type="button" class="wishlist-btn w-14 h-14 border border-gray-200 flex items-center justify-center hover:border-black hover:bg-black hover:text-white transition-all">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            {% else %}
+            <button disabled class="w-full bg-gray-200 text-gray-500 py-4 text-xs font-bold tracking-widest uppercase cursor-not-allowed mb-4">Out of Stock</button>
+            {% endif %}
+
+            <!-- Trust Points -->
+            <div class="border-t border-gray-100 pt-5 space-y-3">
+                <div class="flex items-center gap-3 text-sm text-gray-600">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                    100% Authentic & BIS Hallmarked
+                </div>
+                <div class="flex items-center gap-3 text-sm text-gray-600">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+                    Free shipping on this order
+                </div>
+                <div class="flex items-center gap-3 text-sm text-gray-600">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    15-day hassle-free returns
+                </div>
+                <div class="flex items-center gap-3 text-sm text-gray-600">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                    Arrives in a signature Trinora gift box
+                </div>
+            </div>
+
+            <!-- Share -->
+            <div class="border-t border-gray-100 pt-5 mt-5 flex items-center gap-4">
+                <span class="text-xs text-gray-400 uppercase tracking-wider">Share:</span>
+                <a href="#" class="text-gray-400 hover:text-black transition-colors" title="WhatsApp">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-black transition-colors" title="Instagram">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073z"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Tabs -->
+    <div class="mt-16 border-t border-gray-100">
+        <div class="flex gap-0 border-b border-gray-100">
+            <button onclick="showTab('details', this)" class="tab-btn px-6 py-4 text-xs font-bold tracking-widest uppercase border-b-2 border-black text-black">Details</button>
+            <button onclick="showTab('care', this)" class="tab-btn px-6 py-4 text-xs font-bold tracking-widest uppercase border-b-2 border-transparent text-gray-400 hover:text-black transition-colors">Care Guide</button>
+            <button onclick="showTab('shipping', this)" class="tab-btn px-6 py-4 text-xs font-bold tracking-widest uppercase border-b-2 border-transparent text-gray-400 hover:text-black transition-colors">Shipping & Returns</button>
+        </div>
+        <div id="tab-details" class="tab-pane py-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <table class="w-full text-sm">
+                        <tr class="border-b border-gray-100"><td class="py-3 text-gray-400 pr-8">Product</td><td class="py-3 font-medium">{{ product.name }}</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-3 text-gray-400 pr-8">Category</td><td class="py-3">{{ product.category.name }}</td></tr>
+                        {% if product.material %}<tr class="border-b border-gray-100"><td class="py-3 text-gray-400 pr-8">Material</td><td class="py-3">{{ product.material }}</td></tr>{% endif %}
+                        <tr class="border-b border-gray-100"><td class="py-3 text-gray-400 pr-8">Availability</td><td class="py-3">{% if product.in_stock %}In Stock{% else %}Out of Stock{% endif %}</td></tr>
+                        <tr><td class="py-3 text-gray-400 pr-8">SKU</td><td class="py-3 font-mono text-xs">TRN-{{ product.id|stringformat:"04d" }}</td></tr>
+                    </table>
+                </div>
+                <div>
+                    <h6 class="text-xs font-bold tracking-widest uppercase mb-4">What's Included</h6>
+                    <ul class="space-y-2">
+                        <li class="flex items-center gap-3 text-sm"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> {{ product.name }}</li>
+                        <li class="flex items-center gap-3 text-sm"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Signature Trinora Gift Box</li>
+                        <li class="flex items-center gap-3 text-sm"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Certificate of Authenticity</li>
+                        <li class="flex items-center gap-3 text-sm"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Care Guide Card</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="tab-care" class="tab-pane hidden py-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
+                <div class="flex items-start gap-4"><div class="w-8 h-8 bg-gray-100 flex items-center justify-center flex-shrink-0 text-sm">💧</div><div><h6 class="font-bold text-sm mb-1">Avoid Moisture</h6><p class="text-sm text-gray-600">Remove before bathing, swimming, or exercising to prevent tarnishing.</p></div></div>
+                <div class="flex items-start gap-4"><div class="w-8 h-8 bg-gray-100 flex items-center justify-center flex-shrink-0 text-sm">📦</div><div><h6 class="font-bold text-sm mb-1">Store Properly</h6><p class="text-sm text-gray-600">Keep in the provided box or soft pouch away from direct sunlight.</p></div></div>
+                <div class="flex items-start gap-4"><div class="w-8 h-8 bg-gray-100 flex items-center justify-center flex-shrink-0 text-sm">🧴</div><div><h6 class="font-bold text-sm mb-1">Clean Gently</h6><p class="text-sm text-gray-600">Use a soft dry cloth. Avoid harsh chemicals or abrasives.</p></div></div>
+                <div class="flex items-start gap-4"><div class="w-8 h-8 bg-gray-100 flex items-center justify-center flex-shrink-0 text-sm">✨</div><div><h6 class="font-bold text-sm mb-1">Professional Polish</h6><p class="text-sm text-gray-600">Trinora offers free lifetime polishing. Visit us or mail your piece in.</p></div></div>
+            </div>
+        </div>
+        <div id="tab-shipping" class="tab-pane hidden py-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl">
+                <div>
+                    <h6 class="font-bold text-sm mb-4">Shipping</h6>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ Free shipping on orders above ₹2,999</li>
+                        <li>✓ Standard delivery: 5–7 business days</li>
+                        <li>✓ Express delivery: 2–3 business days (₹199)</li>
+                        <li>✓ All orders securely packaged & insured</li>
+                        <li>✓ Pan-India delivery available</li>
+                    </ul>
+                </div>
+                <div>
+                    <h6 class="font-bold text-sm mb-4">Returns</h6>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ 15-day hassle-free return policy</li>
+                        <li>✓ Item must be unused in original packaging</li>
+                        <li>✓ Initiate return via email or contact page</li>
+                        <li>✓ Refund processed in 5–7 business days</li>
+                        <li>✗ Custom/engraved pieces are non-returnable</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Related Products -->
+{% if related_products %}
+<section class="py-16 px-4 bg-gray-50 mt-8">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex items-end justify-between mb-8">
+            <h2 class="font-heading text-2xl md:text-3xl">You May Also Love</h2>
+            <a href="{% url 'products' %}?category={{ product.category.slug }}" class="text-xs font-bold tracking-widest uppercase border-b border-black pb-0.5 hover:text-gray-500 hover:border-gray-500 transition-colors">View All</a>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6" data-stagger="80">
+            {% for rp in related_products %}
+            <div class="product-card-wrap group">
+                <div class="relative aspect-square overflow-hidden bg-gray-100 mb-3">
+                    <a href="{% url 'product_detail' rp.slug %}">
+                        <img src="{{ rp.image.url }}" alt="{{ rp.name }}" class="w-full h-full object-cover">
+                    </a>
+                    <div class="quick-add absolute bottom-0 left-0 right-0 bg-black/85 py-3">
+                        <a href="{% url 'product_detail' rp.slug %}" class="block text-center text-white text-xs font-bold tracking-widest uppercase">Quick View</a>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-[10px] tracking-[0.2em] uppercase text-gray-400 mb-1">{{ rp.category.name }}</p>
+                    <h3 class="text-sm font-medium mb-1"><a href="{% url 'product_detail' rp.slug %}" class="hover:text-gray-500 transition-colors">{{ rp.name }}</a></h3>
+                    <span class="text-sm font-bold">₹{{ rp.display_price }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function setMainImg(src, btn) {
+    document.getElementById('mainImg').src = src;
+    document.querySelectorAll('.thumb-btn').forEach(b => {
+        b.classList.remove('border-black');
+        b.classList.add('border-transparent');
+    });
+    btn.classList.remove('border-transparent');
+    btn.classList.add('border-black');
+}
+function changeQty(d) {
+    const inp = document.getElementById('qtyInput');
+    let v = parseInt(inp.value) + d;
+    inp.value = Math.min(10, Math.max(1, v));
+}
+function showTab(id, btn) {
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+    document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.remove('border-black', 'text-black');
+        b.classList.add('border-transparent', 'text-gray-400');
+    });
+    document.getElementById('tab-' + id).classList.remove('hidden');
+    btn.classList.remove('border-transparent', 'text-gray-400');
+    btn.classList.add('border-black', 'text-black');
+}
+
+// AJAX Add to Cart
+const cartForm = document.getElementById('addToCartForm');
+if (cartForm) {
+    cartForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('addToCartBtn');
+        const formData = new FormData(cartForm);
+        btn.textContent = 'Adding...';
+        btn.disabled = true;
+        fetch(cartForm.action, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: formData,
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                // Update badge
+                const badge = document.getElementById('cartBadge');
+                if (badge) {
+                    badge.textContent = data.cart_count;
+                    badge.classList.remove('hidden');
+                }
+                // Show toast
+                showCartToast(data.message);
+            }
+        })
+        .catch(() => {})
+        .finally(() => {
+            btn.textContent = 'Add to Bag';
+            btn.disabled = false;
+        });
+    });
+}
+
+function showCartToast(msg) {
+    let t = document.getElementById('cartToast');
+    if (!t) {
+        t = document.createElement('div');
+        t.id = 'cartToast';
+        t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:12px 24px;font-size:13px;font-weight:500;letter-spacing:.05em;border-radius:2px;z-index:9999;transition:opacity .3s;pointer-events:none;white-space:nowrap;';
+        document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.opacity = '1';
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => { t.style.opacity = '0'; }, 3000);
+}
+</script>
+{% endblock %}

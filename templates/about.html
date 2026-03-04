@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us – Trinora Fine Jewellery{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+<div class="relative text-white py-24 px-4 overflow-hidden" style="min-height:320px;">
+    <img src="{% static 'images/j34.jpeg' %}" alt="About Trinora" class="absolute inset-0 w-full h-full object-cover">
+    <div class="absolute inset-0 bg-black/65"></div>
+    <div class="relative max-w-7xl mx-auto text-center">
+        <p class="text-xs tracking-[0.4em] uppercase text-gold mb-4">Our Story</p>
+        <h1 class="font-heading text-5xl md:text-6xl text-white mb-4">About Trinora</h1>
+        <p class="font-display italic text-xl text-gray-400">Where Art Meets Elegance</p>
+        <nav class="flex items-center justify-center gap-2 mt-6 text-xs text-gray-500">
+            <a href="{% url 'home' %}" class="hover:text-white transition-colors">Home</a>
+            <span>/</span>
+            <span class="text-white">About Us</span>
+        </nav>
+    </div>
+</div>
+
+<!-- Brand Story -->
+<section class="py-20 px-4">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div class="relative">
+                <div class="aspect-[4/5] overflow-hidden">
+                    <img src="{% static 'images/j35.jpeg' %}" alt="Trinora Jewellery Craftsmanship" class="w-full h-full object-cover">
+                </div>
+                <div class="absolute bottom-0 right-0 translate-x-4 translate-y-4 bg-black text-white p-8">
+                    <p class="font-heading text-5xl text-gold">Est.</p>
+                    <p class="font-heading text-4xl text-white">2009</p>
+                    <p class="text-xs text-gray-400 tracking-wider mt-1 uppercase">Fine Jewellery</p>
+                </div>
+            </div>
+            <div>
+                <p class="text-xs tracking-[0.3em] uppercase text-gray-400 mb-4">Who We Are</p>
+                <h2 class="font-heading text-4xl md:text-5xl leading-tight mb-6">Crafting Stories<br>in <span class="font-display italic font-light text-gold">Gold & Silver</span></h2>
+                <p class="text-lg text-gray-700 leading-relaxed mb-4 font-display italic">
+                    Trinora was born in 2009 in the Pink City of Jaipur — India's jewellery capital — with a single vision: to create jewellery that transcends trends and becomes a cherished part of your story.
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    Our founder, Meera Singhania, grew up watching her grandmother wear the same pair of gold earrings every day — not because they were expensive, but because they carried memories. That childhood observation became the guiding philosophy of Trinora.
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-8">
+                    Today, Trinora employs over 50 skilled artisans, many from families with generations of jewellery-making heritage. We blend time-honoured techniques with modern design sensibilities.
+                </p>
+                <!-- Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-6 border-t border-gray-100">
+                    <div><p class="font-heading text-3xl text-gold">15+</p><p class="text-xs text-gray-500 uppercase tracking-wider mt-1">Years of Craft</p></div>
+                    <div><p class="font-heading text-3xl text-gold">50+</p><p class="text-xs text-gray-500 uppercase tracking-wider mt-1">Artisans</p></div>
+                    <div><p class="font-heading text-3xl text-gold">10K+</p><p class="text-xs text-gray-500 uppercase tracking-wider mt-1">Customers</p></div>
+                    <div><p class="font-heading text-3xl text-gold">500+</p><p class="text-xs text-gray-500 uppercase tracking-wider mt-1">Designs</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission & Vision -->
+<section class="py-16 px-4 bg-gray-50">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white border border-gray-100 p-10 border-t-4 border-t-black">
+                <div class="w-12 h-12 bg-black flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <h3 class="font-heading text-2xl mb-4">Our Mission</h3>
+                <p class="text-gray-600 leading-relaxed">To create fine jewellery that is beautiful, meaningful, and accessible — without compromising on craftsmanship, ethics, or quality. We want every woman to own a piece that tells her story.</p>
+            </div>
+            <div class="bg-black text-white border-t-4 border-t-gold p-10">
+                <div class="w-12 h-12 bg-gold flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                </div>
+                <h3 class="font-heading text-2xl mb-4">Our Vision</h3>
+                <p class="text-gray-400 leading-relaxed">To become India's most loved fine jewellery brand by keeping alive the ancient art of handcrafted jewellery while building a sustainable, ethical business that empowers artisans.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Core Values -->
+<section class="py-16 px-4">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+            <p class="text-xs tracking-[0.3em] uppercase text-gray-400 mb-2">What Drives Us</p>
+            <h2 class="font-heading text-3xl md:text-4xl">Our Core Values</h2>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="text-center p-8 border border-gray-100 hover:border-black hover:shadow-lg transition-all duration-300">
+                <div class="text-4xl mb-5">❤️</div>
+                <h4 class="font-heading text-xl mb-3">Crafted with Love</h4>
+                <p class="text-sm text-gray-600 leading-relaxed">Every piece is handmade by skilled artisans who pour their heart into every detail, from initial sketch to final polish.</p>
+            </div>
+            <div class="text-center p-8 border border-gray-100 hover:border-black hover:shadow-lg transition-all duration-300">
+                <div class="text-4xl mb-5">🌿</div>
+                <h4 class="font-heading text-xl mb-3">Ethically Sourced</h4>
+                <p class="text-sm text-gray-600 leading-relaxed">Our gemstones and metals are ethically mined and certified by trusted international suppliers we've partnered with for years.</p>
+            </div>
+            <div class="text-center p-8 border border-gray-100 hover:border-black hover:shadow-lg transition-all duration-300">
+                <div class="text-4xl mb-5">💎</div>
+                <h4 class="font-heading text-xl mb-3">Uncompromised Quality</h4>
+                <p class="text-sm text-gray-600 leading-relaxed">Each piece undergoes a rigorous 12-point quality check before it reaches you. We never compromise on excellence.</p>
+            </div>
+            <div class="text-center p-8 border border-gray-100 hover:border-black hover:shadow-lg transition-all duration-300">
+                <div class="text-4xl mb-5">🤝</div>
+                <h4 class="font-heading text-xl mb-3">Artisan Empowerment</h4>
+                <p class="text-sm text-gray-600 leading-relaxed">We provide fair wages, safe working conditions, and skill development to every artisan in our growing family.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Process -->
+<section class="py-16 px-4 bg-black text-white">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+            <p class="text-xs tracking-[0.3em] uppercase text-gold mb-2">How We Create</p>
+            <h2 class="font-heading text-3xl md:text-4xl text-white">The Trinora Process</h2>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="text-center">
+                <div class="text-xs tracking-[0.3em] text-gold uppercase mb-3">01</div>
+                <div class="text-4xl mb-4">✏️</div>
+                <h5 class="font-heading text-lg text-white mb-2">Design</h5>
+                <p class="text-sm text-gray-500 leading-relaxed">Sketched by hand, inspired by nature, architecture, and ancient Indian motifs.</p>
+            </div>
+            <div class="text-center">
+                <div class="text-xs tracking-[0.3em] text-gold uppercase mb-3">02</div>
+                <div class="text-4xl mb-4">🔨</div>
+                <h5 class="font-heading text-lg text-white mb-2">Craft</h5>
+                <p class="text-sm text-gray-500 leading-relaxed">Master artisans meticulously shape, solder, and assemble using traditional techniques.</p>
+            </div>
+            <div class="text-center">
+                <div class="text-xs tracking-[0.3em] text-gold uppercase mb-3">03</div>
+                <div class="text-4xl mb-4">💎</div>
+                <h5 class="font-heading text-lg text-white mb-2">Set</h5>
+                <p class="text-sm text-gray-500 leading-relaxed">Certified gemstones carefully selected and set by hand for perfect placement.</p>
+            </div>
+            <div class="text-center">
+                <div class="text-xs tracking-[0.3em] text-gold uppercase mb-3">04</div>
+                <div class="text-4xl mb-4">✅</div>
+                <h5 class="font-heading text-lg text-white mb-2">Certify</h5>
+                <p class="text-sm text-gray-500 leading-relaxed">Every piece passes our 12-point quality check and is certified before reaching you.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team -->
+<section class="py-16 px-4">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+            <p class="text-xs tracking-[0.3em] uppercase text-gray-400 mb-2">The People Behind</p>
+            <h2 class="font-heading text-3xl md:text-4xl">Meet Our Team</h2>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
+            {% for member in "MPR" %}
+            <div class="text-center">
+                <div class="w-24 h-24 rounded-full bg-black text-white flex items-center justify-center font-heading text-3xl mx-auto mb-4 border-4 border-gray-100">
+                    {% if forloop.counter == 1 %}M{% elif forloop.counter == 2 %}P{% else %}R{% endif %}
+                </div>
+                <h5 class="font-heading text-lg mb-1">
+                    {% if forloop.counter == 1 %}Meera Singhania
+                    {% elif forloop.counter == 2 %}Priyanka Sharma
+                    {% else %}Ratan Lal{% endif %}
+                </h5>
+                <p class="text-xs text-gold tracking-wider uppercase mb-2">
+                    {% if forloop.counter == 1 %}Founder & Creative Director
+                    {% elif forloop.counter == 2 %}Head of Design
+                    {% else %}Head Artisan{% endif %}
+                </p>
+                <p class="text-sm text-gray-500">
+                    {% if forloop.counter == 1 %}20+ years in fine jewellery. Meera's vision shapes every Trinora collection.
+                    {% elif forloop.counter == 2 %}NIFT graduate merging traditional Jaipur aesthetics with global design trends.
+                    {% else %}Third-generation goldsmith with 30 years of master craftsmanship.{% endif %}
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Awards -->
+<section class="py-16 px-4 bg-gray-50">
+    <div class="max-w-7xl mx-auto text-center">
+        <p class="text-xs tracking-[0.3em] uppercase text-gray-400 mb-2">Recognition</p>
+        <h2 class="font-heading text-3xl mb-10">Awards & Certifications</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="bg-white border border-gray-100 p-6 hover:border-black transition-colors"><div class="text-3xl mb-3">🏆</div><h6 class="font-bold text-sm mb-1">Best Artisan Brand</h6><p class="text-xs text-gray-500">India Jewellery Awards 2023</p></div>
+            <div class="bg-white border border-gray-100 p-6 hover:border-black transition-colors"><div class="text-3xl mb-3">🔖</div><h6 class="font-bold text-sm mb-1">BIS Hallmark Certified</h6><p class="text-xs text-gray-500">Bureau of Indian Standards</p></div>
+            <div class="bg-white border border-gray-100 p-6 hover:border-black transition-colors"><div class="text-3xl mb-3">🌿</div><h6 class="font-bold text-sm mb-1">Ethical Trade</h6><p class="text-xs text-gray-500">Responsible Jewellery Council</p></div>
+            <div class="bg-white border border-gray-100 p-6 hover:border-black transition-colors"><div class="text-3xl mb-3">⭐</div><h6 class="font-bold text-sm mb-1">4.9/5 Rating</h6><p class="text-xs text-gray-500">Based on 2,500+ Reviews</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-20 px-4 bg-black text-white text-center">
+    <p class="text-xs tracking-[0.4em] uppercase text-gold mb-4">Discover Trinora</p>
+    <h2 class="font-heading text-4xl md:text-5xl text-white mb-4">Ready to Find Your<br>Perfect Piece?</h2>
+    <p class="text-gray-400 max-w-md mx-auto mb-8 text-sm leading-relaxed">Browse our curated collections and find jewellery that speaks to your soul.</p>
+    <div class="flex flex-wrap gap-4 justify-center">
+        <a href="{% url 'products' %}" class="bg-white text-black px-8 py-3.5 text-xs font-bold tracking-widest uppercase hover:bg-gray-100 transition-colors">Shop Now</a>
+        <a href="{% url 'contact' %}" class="border border-white/40 text-white px-8 py-3.5 text-xs font-bold tracking-widest uppercase hover:border-white hover:bg-white/10 transition-all">Get in Touch</a>
+    </div>
+</section>
+
+{% endblock %}

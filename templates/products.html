@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if active_category %}{{ active_category.name }} – {% endif %}Shop Jewellery – Trinora{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+<div class="relative border-b border-gray-100 py-10 px-4 bg-gray-50 overflow-hidden" data-animate="fade-down">
+    <div class="max-w-7xl mx-auto">
+        <nav class="flex items-center gap-2 text-xs text-gray-400 mb-4">
+            <a href="{% url 'home' %}" class="hover:text-black transition-colors">Home</a>
+            <span>/</span>
+            <a href="{% url 'products' %}" class="hover:text-black transition-colors">Shop</a>
+            {% if active_category %}<span>/</span><span class="text-black">{{ active_category.name }}</span>{% endif %}
+        </nav>
+        <h1 class="font-heading text-4xl md:text-5xl">
+            {% if active_category %}{{ active_category.name }}{% else %}All Jewellery{% endif %}
+        </h1>
+        {% if active_category and active_category.description %}
+        <p class="text-gray-500 mt-3 max-w-xl text-sm">{{ active_category.description }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 py-10">
+    <div class="flex gap-8">
+
+        <!-- Sidebar -->
+        <aside class="hidden lg:block w-56 flex-shrink-0">
+            <div class="sticky top-28">
+                <!-- Categories filter -->
+                <div class="mb-8">
+                    <h6 class="text-xs font-bold tracking-[0.2em] uppercase mb-4">Categories</h6>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="{% url 'products' %}" class="block text-sm py-1 transition-colors {% if not active_category %}font-bold text-black{% else %}text-gray-500 hover:text-black{% endif %}">
+                                All Jewellery
+                            </a>
+                        </li>
+                        {% for cat in categories %}
+                        <li>
+                            <a href="{% url 'products' %}?category={{ cat.slug }}"
+                               class="flex items-center justify-between text-sm py-1 transition-colors {% if active_category.slug == cat.slug %}font-bold text-black{% else %}text-gray-500 hover:text-black{% endif %}">
+                                <span>{{ cat.name }}</span>
+                                <span class="text-xs text-gray-300">({{ cat.products.count }})</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="border-t border-gray-100 pt-6 mb-8">
+                    <h6 class="text-xs font-bold tracking-[0.2em] uppercase mb-4">Price</h6>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="block text-sm text-gray-500 hover:text-black py-1 transition-colors">Under ₹1,000</a></li>
+                        <li><a href="#" class="block text-sm text-gray-500 hover:text-black py-1 transition-colors">₹1,000 – ₹2,999</a></li>
+                        <li><a href="#" class="block text-sm text-gray-500 hover:text-black py-1 transition-colors">₹3,000 – ₹4,999</a></li>
+                        <li><a href="#" class="block text-sm text-gray-500 hover:text-black py-1 transition-colors">₹5,000 & above</a></li>
+                    </ul>
+                </div>
+
+                <div class="border-t border-gray-100 pt-6">
+                    <h6 class="text-xs font-bold tracking-[0.2em] uppercase mb-4">Material</h6>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="block text-sm text-gray-500 hover:text-black py-1 transition-colors">22k Gold</a></li>
+                        <li><a href="#" class="block text-sm text-gray-500 hover:text-black py-1 transition-colors">18k Gold</a></li>
+                        <li><a href="#" class="block text-sm text-gray-500 hover:text-black py-1 transition-colors">Rose Gold</a></li>
+                        <li><a href="#" class="block text-sm text-gray-500 hover:text-black py-1 transition-colors">Sterling Silver</a></li>
+                        <li><a href="#" class="block text-sm text-gray-500 hover:text-black py-1 transition-colors">Diamond</a></li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Products -->
+        <div class="flex-1 min-w-0">
+            <!-- Toolbar -->
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+                <p class="text-sm text-gray-500">
+                    <span class="font-bold text-black">{{ products|length }}</span> piece{% if products|length != 1 %}s{% endif %} found
+                </p>
+                <div class="flex items-center gap-3">
+                    <!-- Mobile filter button -->
+                    <button class="lg:hidden flex items-center gap-2 border border-gray-200 px-4 py-2 text-xs font-medium tracking-wider uppercase hover:border-black transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+                        Filter
+                    </button>
+                    <select class="border border-gray-200 px-3 py-2 text-xs outline-none focus:border-black transition-colors bg-white">
+                        <option>Sort: Newest</option>
+                        <option>Price: Low to High</option>
+                        <option>Price: High to Low</option>
+                        <option>Best Selling</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Category Pills (mobile) -->
+            <div class="flex gap-2 overflow-x-auto pb-3 mb-6 lg:hidden">
+                <a href="{% url 'products' %}" class="flex-shrink-0 px-4 py-1.5 text-xs font-medium border {% if not active_category %}bg-black text-white border-black{% else %}border-gray-200 text-gray-600 hover:border-black{% endif %} transition-all">All</a>
+                {% for cat in categories %}
+                <a href="{% url 'products' %}?category={{ cat.slug }}" class="flex-shrink-0 px-4 py-1.5 text-xs font-medium border {% if active_category.slug == cat.slug %}bg-black text-white border-black{% else %}border-gray-200 text-gray-600 hover:border-black{% endif %} transition-all">{{ cat.name }}</a>
+                {% endfor %}
+            </div>
+
+            <!-- Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6" data-stagger="70">
+                {% for product in products %}
+                <div class="product-card-wrap group">
+                    <div class="relative aspect-square overflow-hidden bg-gray-100 mb-3">
+                        <a href="{% url 'product_detail' product.slug %}">
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+                        </a>
+                        {% if product.is_on_sale %}
+                        <span class="absolute top-2 left-2 bg-black text-white text-[10px] px-2 py-1 tracking-wider uppercase">Sale</span>
+                        {% endif %}
+                        {% if not product.in_stock %}
+                        <span class="absolute top-2 left-2 bg-gray-400 text-white text-[10px] px-2 py-1 tracking-wider uppercase">Sold Out</span>
+                        {% endif %}
+                        <div class="absolute top-2 right-2 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-x-2 group-hover:translate-x-0">
+                            <button class="wishlist-btn w-8 h-8 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition-all">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                            </button>
+                        </div>
+                        <div class="quick-add absolute bottom-0 left-0 right-0 bg-black/85 py-3">
+                            <a href="{% url 'product_detail' product.slug %}" class="block text-center text-white text-xs font-bold tracking-widest uppercase">Quick View</a>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-[10px] tracking-[0.2em] uppercase text-gray-400 mb-1">{{ product.category.name }}</p>
+                        <h3 class="text-sm font-medium leading-snug mb-1">
+                            <a href="{% url 'product_detail' product.slug %}" class="hover:text-gray-500 transition-colors">{{ product.name }}</a>
+                        </h3>
+                        {% if product.material %}<p class="text-xs text-gray-400 mb-1">{{ product.material }}</p>{% endif %}
+                        <div class="flex items-center gap-2">
+                            {% if product.is_on_sale %}
+                            <span class="text-sm font-bold">₹{{ product.sale_price }}</span>
+                            <span class="text-xs text-gray-400 line-through">₹{{ product.price }}</span>
+                            {% else %}
+                            <span class="text-sm font-bold">₹{{ product.price }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-span-full flex flex-col items-center justify-center py-24 text-center">
+                    <svg class="w-16 h-16 text-gray-200 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                    <h3 class="font-heading text-xl mb-2">No pieces found</h3>
+                    <p class="text-gray-500 text-sm mb-6">We're adding new pieces to this collection. Check back soon!</p>
+                    <a href="{% url 'products' %}" class="bg-black text-white px-8 py-3 text-xs font-bold tracking-widest uppercase hover:bg-gray-800 transition-colors">Browse All Jewellery</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+/* Trinora – Tailwind-based project. All styling via Tailwind utility classes in HTML templates. */
+/* This file is intentionally minimal. */
+
+/* Product card hover overlay (needs JS interaction) */
+.product-card-wrap .quick-add {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.25s, transform 0.25s;
+}
+.product-card-wrap:hover .quick-add {
+    opacity: 1;
+    transform: translateY(0);
+}
+.product-card-wrap img {
+    transition: transform 0.5s ease;
+}
+.product-card-wrap:hover img {
+    transform: scale(1.05);
+}
