@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ product.name }} – Trinora Fine Jewellery{% endblock %}
+{% block title %}{{ product.name }} – Trinora Jewels{% endblock %}
 {% block meta_description %}{{ product.description|truncatewords:20 }}{% endblock %}
 
 {% block content %}
@@ -111,23 +111,34 @@
             <button disabled class="w-full bg-gray-200 text-gray-500 py-4 text-xs font-bold tracking-widest uppercase cursor-not-allowed mb-4">Out of Stock</button>
             {% endif %}
 
+            <!-- Key Features -->
+            <div class="border-t border-gray-100 pt-5 mb-2">
+                <p class="text-xs font-bold tracking-widest uppercase mb-3 text-gray-500">Key Features</p>
+                <ul class="space-y-2">
+                    <li class="flex items-center gap-2 text-sm text-gray-700"><svg class="w-4 h-4 flex-shrink-0 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Anti-Tarnish Jewellery</li>
+                    <li class="flex items-center gap-2 text-sm text-gray-700"><svg class="w-4 h-4 flex-shrink-0 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Waterproof &amp; Sweatproof</li>
+                    <li class="flex items-center gap-2 text-sm text-gray-700"><svg class="w-4 h-4 flex-shrink-0 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Hypoallergenic (Skin Friendly)</li>
+                    <li class="flex items-center gap-2 text-sm text-gray-700"><svg class="w-4 h-4 flex-shrink-0 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Long Lasting Shine</li>
+                    <li class="flex items-center gap-2 text-sm text-gray-700"><svg class="w-4 h-4 flex-shrink-0 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Premium Quality Finish</li>
+                </ul>
+            </div>
             <!-- Trust Points -->
             <div class="border-t border-gray-100 pt-5 space-y-3">
                 <div class="flex items-center gap-3 text-sm text-gray-600">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
-                    100% Authentic & BIS Hallmarked
+                    100% Authentic &amp; Quality Checked
                 </div>
                 <div class="flex items-center gap-3 text-sm text-gray-600">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
-                    Free shipping on this order
+                    PAN India Delivery — Dispatch in 24–48 Hours
                 </div>
                 <div class="flex items-center gap-3 text-sm text-gray-600">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                    15-day hassle-free returns
+                    2-Day Hassle-Free Returns
                 </div>
                 <div class="flex items-center gap-3 text-sm text-gray-600">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                    Arrives in a signature Trinora gift box
+                    Arrives in Secure Packaging
                 </div>
             </div>
 
@@ -166,41 +177,39 @@
                     <h6 class="text-xs font-bold tracking-widest uppercase mb-4">What's Included</h6>
                     <ul class="space-y-2">
                         <li class="flex items-center gap-3 text-sm"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> {{ product.name }}</li>
-                        <li class="flex items-center gap-3 text-sm"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Signature Trinora Gift Box</li>
-                        <li class="flex items-center gap-3 text-sm"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Certificate of Authenticity</li>
-                        <li class="flex items-center gap-3 text-sm"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Care Guide Card</li>
+                        <li class="flex items-center gap-3 text-sm"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Secure Trinora Packaging</li>
+                        <li class="flex items-center gap-3 text-sm"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Care Instructions Card</li>
                     </ul>
                 </div>
             </div>
         </div>
         <div id="tab-care" class="tab-pane hidden py-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
-                <div class="flex items-start gap-4"><div class="w-8 h-8 bg-gray-100 flex items-center justify-center flex-shrink-0 text-sm">💧</div><div><h6 class="font-bold text-sm mb-1">Avoid Moisture</h6><p class="text-sm text-gray-600">Remove before bathing, swimming, or exercising to prevent tarnishing.</p></div></div>
-                <div class="flex items-start gap-4"><div class="w-8 h-8 bg-gray-100 flex items-center justify-center flex-shrink-0 text-sm">📦</div><div><h6 class="font-bold text-sm mb-1">Store Properly</h6><p class="text-sm text-gray-600">Keep in the provided box or soft pouch away from direct sunlight.</p></div></div>
-                <div class="flex items-start gap-4"><div class="w-8 h-8 bg-gray-100 flex items-center justify-center flex-shrink-0 text-sm">🧴</div><div><h6 class="font-bold text-sm mb-1">Clean Gently</h6><p class="text-sm text-gray-600">Use a soft dry cloth. Avoid harsh chemicals or abrasives.</p></div></div>
-                <div class="flex items-start gap-4"><div class="w-8 h-8 bg-gray-100 flex items-center justify-center flex-shrink-0 text-sm">✨</div><div><h6 class="font-bold text-sm mb-1">Professional Polish</h6><p class="text-sm text-gray-600">Trinora offers free lifetime polishing. Visit us or mail your piece in.</p></div></div>
+                <div class="flex items-start gap-4"><div class="w-8 h-8 bg-gray-100 flex items-center justify-center flex-shrink-0 text-sm">💧</div><div><h6 class="font-bold text-sm mb-1">Waterproof Design</h6><p class="text-sm text-gray-600">Our jewellery is waterproof and sweat-proof — safe to wear during daily activities including rain and workouts.</p></div></div>
+                <div class="flex items-start gap-4"><div class="w-8 h-8 bg-gray-100 flex items-center justify-center flex-shrink-0 text-sm">📦</div><div><h6 class="font-bold text-sm mb-1">Store Properly</h6><p class="text-sm text-gray-600">Keep in the provided box or soft pouch away from direct sunlight for longest-lasting shine.</p></div></div>
+                <div class="flex items-start gap-4"><div class="w-8 h-8 bg-gray-100 flex items-center justify-center flex-shrink-0 text-sm">🧴</div><div><h6 class="font-bold text-sm mb-1">Clean Gently</h6><p class="text-sm text-gray-600">Use a soft dry cloth to wipe after use. Avoid harsh chemicals or abrasives to maintain the anti-tarnish coating.</p></div></div>
+                <div class="flex items-start gap-4"><div class="w-8 h-8 bg-gray-100 flex items-center justify-center flex-shrink-0 text-sm">✨</div><div><h6 class="font-bold text-sm mb-1">Anti-Tarnish Coating</h6><p class="text-sm text-gray-600">Our premium anti-tarnish coating ensures your jewellery stays shiny and beautiful for a long time with minimal care.</p></div></div>
             </div>
         </div>
         <div id="tab-shipping" class="tab-pane hidden py-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl">
                 <div>
-                    <h6 class="font-bold text-sm mb-4">Shipping</h6>
+                    <h6 class="font-bold text-sm mb-4">Shipping Information</h6>
                     <ul class="space-y-2 text-sm text-gray-600">
+                        <li>✓ PAN India Delivery Available</li>
+                        <li>✓ Dispatch in 24–48 Hours</li>
+                        <li>✓ Delivery Time: 3–7 Days</li>
+                        <li>✓ All orders securely packaged</li>
                         <li>✓ Free shipping on orders above ₹2,999</li>
-                        <li>✓ Standard delivery: 5–7 business days</li>
-                        <li>✓ Express delivery: 2–3 business days (₹199)</li>
-                        <li>✓ All orders securely packaged & insured</li>
-                        <li>✓ Pan-India delivery available</li>
                     </ul>
                 </div>
                 <div>
-                    <h6 class="font-bold text-sm mb-4">Returns</h6>
+                    <h6 class="font-bold text-sm mb-4">Return / Exchange Policy</h6>
                     <ul class="space-y-2 text-sm text-gray-600">
-                        <li>✓ 15-day hassle-free return policy</li>
-                        <li>✓ Item must be unused in original packaging</li>
+                        <li>✓ Hassle-free returns within 2 days of delivery</li>
+                        <li>✓ Products must be unused with original tags</li>
                         <li>✓ Initiate return via email or contact page</li>
-                        <li>✓ Refund processed in 5–7 business days</li>
-                        <li>✗ Custom/engraved pieces are non-returnable</li>
+                        <li>✓ Refund within 7–10 working days after pickup &amp; verification</li>
                     </ul>
                 </div>
             </div>

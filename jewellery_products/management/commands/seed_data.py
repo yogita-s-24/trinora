@@ -1,36 +1,11 @@
-import os
-import shutil
 from django.core.management.base import BaseCommand
-from django.conf import settings
 from jewellery_products.models import Category, Product, Testimonial
 
 
 class Command(BaseCommand):
-    help = 'Seed database with dummy jewellery data using static images'
+    help = 'Seed database with Trinora Jewels data using media folder images'
 
     def handle(self, *args, **options):
-        # Create media directories
-        media_products = settings.MEDIA_ROOT / 'products'
-        media_products.mkdir(parents=True, exist_ok=True)
-        media_categories = settings.MEDIA_ROOT / 'categories'
-        media_categories.mkdir(parents=True, exist_ok=True)
-
-        static_images = settings.BASE_DIR / 'static' / 'images'
-
-        def copy_img(filename):
-            src = static_images / filename
-            dst = media_products / filename
-            if src.exists() and not dst.exists():
-                shutil.copy2(str(src), str(dst))
-            return f'products/{filename}'
-
-        def copy_cat_img(filename, cat_filename):
-            src = static_images / filename
-            dst = media_categories / cat_filename
-            if src.exists():
-                shutil.copy2(str(src), str(dst))
-            return f'categories/{cat_filename}'
-
         # Clear existing data
         self.stdout.write('Clearing existing data...')
         Product.objects.all().delete()
@@ -41,455 +16,186 @@ class Command(BaseCommand):
         self.stdout.write('Creating categories...')
         categories_data = [
             {
-                'name': 'Necklaces',
-                'description': 'Elegant gold and diamond necklaces for every occasion. From delicate chains to statement pieces crafted in Jaipur.',
-                'img_src': 'j02.jpeg', 'img_dst': 'necklaces.jpeg',
-            },
-            {
                 'name': 'Earrings',
-                'description': 'Handcrafted earrings in gold, diamond, and precious stones. Studs, hoops, jhumkas, drops and more.',
-                'img_src': 'j12.jpeg', 'img_dst': 'earrings.jpeg',
+                'slug': 'earrings',
+                'description': 'Minimal, trendy, and statement anti-tarnish earrings for everyday glam. Waterproof and skin-friendly.',
+                'image': 'Earrings/Earrings 01.jpeg',
             },
             {
-                'name': 'Rings',
-                'description': 'Beautiful rings for every finger and every occasion. Solitaires, bands, cocktail rings and more.',
-                'img_src': 'j22.jpeg', 'img_dst': 'rings.jpeg',
+                'name': 'Chains',
+                'slug': 'chains',
+                'description': 'Elegant anti-tarnish chains and necklaces that elevate your look instantly. Waterproof and long-lasting.',
+                'image': 'Chains/Chain 01.jpeg',
             },
             {
                 'name': 'Bracelets',
-                'description': 'Stunning gold and diamond bracelets. From delicate chains to bold bangles and kada sets.',
-                'img_src': 'j32.jpeg', 'img_dst': 'bracelets.jpeg',
+                'slug': 'bracelets',
+                'description': 'Perfect anti-tarnish bracelets and bangles for a stylish and modern touch. Sweat-proof design.',
+                'image': 'Bracelet/Bracelet 01.jpeg',
             },
             {
-                'name': 'Anklets',
-                'description': 'Delicate gold anklets and payal sets. Traditional and contemporary designs for graceful ankles.',
-                'img_src': 'j40.jpeg', 'img_dst': 'anklets.jpeg',
+                'name': 'Mangalsutra',
+                'slug': 'mangalsutra',
+                'description': 'Modern and traditional anti-tarnish mangalsutra designs for everyday wear. Lightweight and hypoallergenic.',
+                'image': 'Mangalsutra/Mangalsutra 01.jpeg',
             },
             {
-                'name': 'Sets',
-                'description': 'Complete jewellery sets for weddings and special occasions. Matching necklace, earring, ring and bangle sets.',
-                'img_src': 'j45.jpeg', 'img_dst': 'sets.jpeg',
+                'name': 'Rings',
+                'slug': 'rings',
+                'description': 'Trendy anti-tarnish rings with premium finish. Waterproof and skin-friendly for everyday wear.',
+                'image': 'Rings/Ring 01.jpeg',
+            },
+            {
+                'name': 'Watch',
+                'slug': 'watch',
+                'description': 'Stylish waterproof fashion watches with premium anti-tarnish finish. Perfect for modern women.',
+                'image': 'Watch/Watch 01.jpeg',
             },
         ]
 
         categories = {}
         for cat_data in categories_data:
-            img_src = cat_data.pop('img_src')
-            img_dst = cat_data.pop('img_dst')
-            img_path = copy_cat_img(img_src, img_dst)
-            cat = Category.objects.create(image=img_path, **cat_data)
+            cat = Category.objects.create(**cat_data)
             categories[cat.name] = cat
             self.stdout.write(f'  OK Category: {cat.name}')
 
         # ─── Products ─────────────────────────────────────────────────────
         self.stdout.write('Creating products...')
         products_data = [
-            # NECKLACES (j01–j10)
-            {
-                'category': 'Necklaces', 'image': 'j01.jpeg',
-                'name': 'Radiant Gold Choker',
-                'description': 'A stunning 22K gold choker necklace adorned with intricate floral engravings. This handcrafted masterpiece features delicate filigree work inspired by the rich heritage of Jaipur. The adjustable length of 14–18 inches ensures a perfect fit. Perfect for weddings, festivals, and special occasions. Comes in a signature Trinora gift box with a certificate of authenticity.',
-                'price': 24999, 'sale_price': 19999,
-                'material': '22K Gold', 'is_featured': True,
-            },
-            {
-                'category': 'Necklaces', 'image': 'j02.jpeg',
-                'name': 'Diamond Drop Pendant',
-                'description': 'A breathtaking 18K white gold pendant featuring a brilliant-cut solitaire diamond surrounded by a halo of smaller diamonds. The pendant hangs on an elegant 18-inch chain. GIA certified with SI1 clarity and G color grade. Total diamond weight 0.75 carats. An heirloom piece that will be treasured for generations.',
-                'price': 45999,
-                'material': '18K Gold, Diamond 0.75ct', 'is_featured': True,
-            },
-            {
-                'category': 'Necklaces', 'image': 'j03.jpeg',
-                'name': 'Emerald Gold Haaram',
-                'description': 'A magnificent traditional haaram featuring vivid Colombian emeralds set in 22K gold. Each emerald is hand-selected for its rich green color and natural clarity. The intricate gold work features traditional peacock motifs. Total emerald weight 12 carats. A statement piece for brides and festive occasions.',
-                'price': 89999,
-                'material': '22K Gold, Colombian Emerald', 'is_featured': True,
-            },
-            {
-                'category': 'Necklaces', 'image': 'j04.jpeg',
-                'name': 'Pearl Layered Necklace',
-                'description': 'A sophisticated three-layered necklace featuring hand-picked freshwater pearls strung on 18K gold chains. The gradient design moves from a single pearl at the top to a full strand at the bottom. Pearls measure 7–9mm with AAA luster rating. A timeless classic that works for both formal and casual occasions.',
-                'price': 15999, 'sale_price': 12999,
-                'material': '18K Gold, Freshwater Pearl', 'is_featured': True,
-            },
-            {
-                'category': 'Necklaces', 'image': 'j05.jpeg',
-                'name': 'Ruby Heart Pendant',
-                'description': 'A romantic heart-shaped pendant featuring a vivid Burmese ruby set in 22K gold with a diamond halo. The pendant measures 18×16mm and hangs on a delicate 16-inch gold chain. Ruby weight: 1.2 carats. Diamond weight: 0.25 carats. A perfect gift of love for anniversaries and special occasions.',
-                'price': 32999,
-                'material': '22K Gold, Burmese Ruby, Diamond', 'is_featured': True,
-            },
-            {
-                'category': 'Necklaces', 'image': 'j06.jpeg',
-                'name': 'Temple Gold Necklace',
-                'description': 'A regal temple-style necklace crafted in 22K gold featuring goddess motifs, ruby accents, and traditional antique finish. Inspired by the jewellery worn in South Indian temples. The main pendant measures 60×45mm. Perfect for classical dance performances, weddings, and religious ceremonies.',
-                'price': 67999,
-                'material': '22K Antique Gold, Ruby', 'is_featured': False,
-            },
-            {
-                'category': 'Necklaces', 'image': 'j07.jpeg',
-                'name': 'Diamond Tennis Necklace',
-                'description': 'A glamorous tennis necklace featuring 52 brilliant-cut diamonds totaling 5 carats, set in polished 18K white gold. The prong setting maximizes each diamond\'s brilliance. Necklace length: 17 inches. Diamonds: VS2 clarity, F–G color. A classic jewellery piece that adds sparkle to any outfit, day or night.',
-                'price': 125000, 'sale_price': 99999,
-                'material': '18K White Gold, Diamond 5ct', 'is_featured': False,
-            },
-            {
-                'category': 'Necklaces', 'image': 'j08.jpeg',
-                'name': 'Antique Gold Mangalsutra',
-                'description': 'A beautifully crafted traditional mangalsutra in 22K antique gold with black beads and a central pendant featuring Lakshmi motif. The pendant is set with polki diamonds and red enamel. Length: 18 inches adjustable. A sacred and beautiful symbol of matrimonial bliss.',
-                'price': 28999,
-                'material': '22K Antique Gold, Polki Diamond', 'is_featured': False,
-            },
-            {
-                'category': 'Necklaces', 'image': 'j09.jpeg',
-                'name': 'Rose Gold Twisted Chain',
-                'description': 'A delicate and modern rose gold chain necklace with a subtle twisted rope design. Made from 18K rose gold, this versatile 20-inch piece can be worn alone or layered with other necklaces. Chain width: 2mm. The warm blush tone flatters all skin tones beautifully.',
-                'price': 8999,
-                'material': '18K Rose Gold', 'is_featured': False,
-            },
-            {
-                'category': 'Necklaces', 'image': 'j10.jpeg',
-                'name': 'Sapphire Floral Necklace',
-                'description': 'A stunning floral design necklace featuring blue sapphires and diamonds set in 18K yellow gold. Five flower-shaped clusters are linked together in an elegant 16-inch arrangement. Total sapphire weight: 4 carats. Total diamond weight: 1 carat. The sapphires\' deep blue contrasts beautifully with warm gold.',
-                'price': 54999,
-                'material': '18K Gold, Sapphire, Diamond', 'is_featured': False,
-            },
-            # EARRINGS (j11–j20)
-            {
-                'category': 'Earrings', 'image': 'j11.jpeg',
-                'name': 'Diamond Stud Earrings',
-                'description': 'Classic and timeless 18K white gold stud earrings featuring round brilliant-cut diamonds totaling 1.0 carat. Set in secure four-prong settings for maximum light reflection. Diamond grade: VS1 clarity, E–F color. Post and butterfly back for secure wear. These versatile studs are perfect for everyday wear and special occasions alike.',
-                'price': 34999,
-                'material': '18K White Gold, Diamond 1ct', 'is_featured': True,
-            },
-            {
-                'category': 'Earrings', 'image': 'j12.jpeg',
-                'name': 'Gold Jhumka Earrings',
-                'description': 'Traditional Rajasthani jhumka earrings in 22K gold with intricate filigree work and small ruby beads. The dome-shaped top leads to a gently swinging bell adorned with pearl drops. Earring length: 5.5cm. Weight: 12 grams per pair. These earrings make a musical, graceful statement at any ethnic occasion.',
-                'price': 18999, 'sale_price': 14999,
-                'material': '22K Gold, Ruby, Pearl', 'is_featured': True,
-            },
-            {
-                'category': 'Earrings', 'image': 'j13.jpeg',
-                'name': 'Emerald Drop Earrings',
-                'description': 'Elegant drop earrings featuring pear-shaped Colombian emeralds suspended from 18K gold settings. Each emerald is surrounded by a halo of brilliant-cut diamonds. Emerald size: 9×6mm each. Total diamond weight: 0.6 carats. These earrings catch the light with every movement, creating a mesmerizing effect.',
-                'price': 42999,
-                'material': '18K Gold, Colombian Emerald, Diamond', 'is_featured': True,
-            },
-            {
-                'category': 'Earrings', 'image': 'j14.jpeg',
-                'name': 'Pearl Chandelier Earrings',
-                'description': 'Luxurious chandelier earrings featuring cascading tiers of freshwater pearls and 22K gold links. The earrings measure 7cm in length and create a dramatic, feminine effect. Pearls: 5–7mm, AAA luster. Secure hook back with safety catch. Perfect for weddings, cocktail parties, and formal events.',
-                'price': 12999,
-                'material': '22K Gold, Freshwater Pearl', 'is_featured': False,
-            },
-            {
-                'category': 'Earrings', 'image': 'j15.jpeg',
-                'name': 'Ruby Hoop Earrings',
-                'description': 'Statement hoop earrings in 18K gold featuring channel-set rubies. The hoops measure 35mm in diameter and are lightweight despite their bold appearance. Total ruby weight: 2 carats. The rubies create a continuous band of rich red color. Hinge-and-notch closure for security.',
-                'price': 22999,
-                'material': '18K Gold, Ruby 2ct', 'is_featured': False,
-            },
-            {
-                'category': 'Earrings', 'image': 'j16.jpeg',
-                'name': 'Polki Dangle Earrings',
-                'description': 'Exquisite polki diamond dangle earrings in 22K gold with meenakari enamel work. These traditional earrings feature uncut diamonds in a floral pattern with colorful enamel on the reverse. Length: 6cm. Weight: 14 grams. A masterpiece of Indian craftsmanship showcasing centuries-old techniques.',
-                'price': 38999, 'sale_price': 32999,
-                'material': '22K Gold, Polki Diamond, Enamel', 'is_featured': True,
-            },
-            {
-                'category': 'Earrings', 'image': 'j17.jpeg',
-                'name': 'Sapphire Ear Cuffs',
-                'description': 'Modern and edgy ear cuff earrings in 18K white gold with channel-set blue sapphires. These cuffs wrap elegantly around the ear without needing a piercing. Total sapphire weight: 0.8 carats. The contemporary design makes a bold fashion statement for the modern woman.',
-                'price': 16999,
-                'material': '18K White Gold, Sapphire', 'is_featured': False,
-            },
-            {
-                'category': 'Earrings', 'image': 'j18.jpeg',
-                'name': 'Rose Gold Pearl Studs',
-                'description': 'Minimalist rose gold stud earrings featuring a single freshwater pearl set in an 18K rose gold bezel setting. Pearl size: 8mm, AAA luster. Post and butterfly back. The warm pearl-rose gold combination creates a delicate, romantic look. Perfect for everyday elegance in office and casual settings.',
-                'price': 5999,
-                'material': '18K Rose Gold, Freshwater Pearl', 'is_featured': False,
-            },
-            {
-                'category': 'Earrings', 'image': 'j19.jpeg',
-                'name': 'Temple Kasumala Earrings',
-                'description': 'Traditional South Indian temple earrings in 22K gold featuring goddess Lakshmi motifs. The earrings have a distinctive long drop design with multiple tiers and small gold beads. Length: 8cm. These stunning pieces are perfect for classical dance, religious ceremonies, and traditional weddings.',
-                'price': 29999,
-                'material': '22K Gold', 'is_featured': False,
-            },
-            {
-                'category': 'Earrings', 'image': 'j20.jpeg',
-                'name': 'Diamond Flower Earrings',
-                'description': 'Beautiful flower-shaped stud earrings in 18K gold with a central diamond surrounded by petals of smaller diamonds. Each flower measures 12mm in diameter. Total diamond weight: 0.8 carats, VS2 clarity, F color. Secure screw-back posts. A perfect gift for birthdays, anniversaries, and celebrations.',
-                'price': 48999,
-                'material': '18K Gold, Diamond 0.8ct', 'is_featured': False,
-            },
-            # RINGS (j21–j30)
-            {
-                'category': 'Rings', 'image': 'j21.jpeg',
-                'name': 'Solitaire Diamond Ring',
-                'description': 'The ultimate symbol of love — a classic solitaire ring featuring a round brilliant-cut diamond of 1.5 carats set in a six-prong 18K white gold setting. GIA certified with VS1 clarity and E color. Ring width: 2.5mm. Available in sizes 5–10. The timeless design ensures this ring will never go out of style.',
-                'price': 149999,
-                'material': '18K White Gold, Diamond 1.5ct GIA', 'is_featured': True,
-            },
-            {
-                'category': 'Rings', 'image': 'j22.jpeg',
-                'name': 'Emerald Cocktail Ring',
-                'description': 'A stunning cocktail ring featuring a 3-carat Colombian emerald surrounded by a halo of brilliant diamonds in 18K yellow gold. The emerald measures 10×8mm oval cut. Diamond weight: 0.8 carats. Emerald is Zambian origin with minor oil treatment. This ring commands attention in any room.',
-                'price': 89999, 'sale_price': 74999,
-                'material': '18K Gold, Emerald 3ct, Diamond', 'is_featured': True,
-            },
-            {
-                'category': 'Rings', 'image': 'j23.jpeg',
-                'name': 'Engraved Gold Band',
-                'description': 'A beautifully crafted 22K gold band ring with delicate hand-engraved floral patterns. The 4mm wide band is comfortable for everyday wear. Weight: approximately 5 grams. Available in sizes 5–12. The warm yellow gold catches the light magnificently with every gesture. A classic piece for every collection.',
-                'price': 9999,
-                'material': '22K Gold', 'is_featured': False,
-            },
-            {
-                'category': 'Rings', 'image': 'j24.jpeg',
-                'name': 'Ruby Cluster Ring',
-                'description': 'A vibrant cluster ring featuring Burmese rubies and diamonds in an 18K gold setting. Central oval ruby: 1.5 carats. Surrounding: 12 smaller rubies totaling 1 carat and 24 diamond accents of 0.3 carats. A bold, colorful statement piece for cocktail parties and special occasions.',
-                'price': 62999,
-                'material': '18K Gold, Burmese Ruby, Diamond', 'is_featured': True,
-            },
-            {
-                'category': 'Rings', 'image': 'j25.jpeg',
-                'name': 'Rose Gold Diamond Band',
-                'description': 'A romantic eternity band in 18K rose gold with channel-set round brilliant diamonds. Total diamond weight: 2 carats, VS1 clarity, F–G color. Band width: 3mm. The rose gold\'s warm blush tone makes the diamonds appear larger and more brilliant. Perfect as a wedding band or anniversary gift.',
-                'price': 54999,
-                'material': '18K Rose Gold, Diamond 2ct', 'is_featured': False,
-            },
-            {
-                'category': 'Rings', 'image': 'j26.jpeg',
-                'name': 'Polki Statement Ring',
-                'description': 'A magnificent statement ring featuring uncut polki diamonds set in 22K gold with intricate meenakari work on the reverse. The top surface is covered with polki diamonds in a floral arrangement measuring 25×20mm. A true collector\'s piece reflecting India\'s finest jewellery tradition.',
-                'price': 44999, 'sale_price': 39999,
-                'material': '22K Gold, Polki Diamond, Enamel', 'is_featured': False,
-            },
-            {
-                'category': 'Rings', 'image': 'j27.jpeg',
-                'name': 'Sapphire Three Stone Ring',
-                'description': 'A classic three-stone ring in 18K white gold featuring a central blue sapphire flanked by two oval-cut diamonds. This design symbolizes the past, present, and future. Central sapphire: 2 carats, 8×6mm. Diamond weight: 0.6 carats. GIA certified. Available in sizes 4–10.',
-                'price': 78999,
-                'material': '18K White Gold, Sapphire, Diamond', 'is_featured': False,
-            },
-            {
-                'category': 'Rings', 'image': 'j28.jpeg',
-                'name': 'Kundan Floral Ring',
-                'description': 'A traditional Rajasthani kundan ring featuring a central flower design with colored gemstones set in 22K gold. The ring features blue, green, and red stones in a vibrant floral pattern with gold scrollwork. Ring width: 18mm at widest. A wearable piece of art from Jaipur\'s finest artisans.',
-                'price': 18999,
-                'material': '22K Gold, Kundan, Gemstones', 'is_featured': False,
-            },
-            {
-                'category': 'Rings', 'image': 'j29.jpeg',
-                'name': 'Diamond Infinity Ring',
-                'description': 'A modern infinity ring in 18K white gold with pavé-set diamonds forming the infinity symbol. Total diamond weight: 0.5 carats, SI1 clarity, G color. Band width: 8mm at widest. This ring represents eternal love and infinite possibilities. Available in sizes 4–10.',
-                'price': 29999,
-                'material': '18K White Gold, Diamond 0.5ct', 'is_featured': False,
-            },
-            {
-                'category': 'Rings', 'image': 'j30.jpeg',
-                'name': 'Vintage Pearl Ring',
-                'description': 'A vintage-inspired ring featuring a baroque freshwater pearl set in an elaborate 22K gold setting with diamond accents. Pearl size: 12×10mm. Diamond weight: 0.15 carats. The ornate setting features scrollwork and milgrain details reminiscent of Edwardian jewellery. A romantic and unique piece.',
-                'price': 14999,
-                'material': '22K Gold, Baroque Pearl, Diamond', 'is_featured': False,
-            },
-            # BRACELETS (j31–j38)
-            {
-                'category': 'Bracelets', 'image': 'j31.jpeg',
-                'name': 'Gold Kangan Bangle Set',
-                'description': 'Traditional 22K gold kangan bangles with a diameter of 62mm, featuring intricate wire-twist designs and small diamond-cut beads. Sold as a set of two. Weight: 18 grams each. The substantial weight makes these bangles feel luxuriously premium. A festive season staple.',
-                'price': 34999,
-                'material': '22K Gold', 'is_featured': True,
-            },
-            {
-                'category': 'Bracelets', 'image': 'j32.jpeg',
-                'name': 'Diamond Tennis Bracelet',
-                'description': 'A classic tennis bracelet in 18K white gold featuring 28 prong-set round brilliant diamonds totaling 3.5 carats. VS2 clarity, F–G color. Length: 7 inches with box clasp and safety catch. The flexible design ensures comfortable wear. Perfect for formal occasions or as a luxurious everyday piece.',
-                'price': 89999, 'sale_price': 79999,
-                'material': '18K White Gold, Diamond 3.5ct', 'is_featured': True,
-            },
-            {
-                'category': 'Bracelets', 'image': 'j33.jpeg',
-                'name': 'Ruby Bangle Set',
-                'description': 'A set of three 22K gold bangles with channel-set rubies. Each bangle is 4mm wide and features rubies of 2mm diameter. Diameter: 62mm. These colorful bangles look stunning worn individually or stacked together. Perfect for Diwali, Navratri, and all festive occasions.',
-                'price': 28999,
-                'material': '22K Gold, Ruby', 'is_featured': False,
-            },
-            {
-                'category': 'Bracelets', 'image': 'j34.jpeg',
-                'name': 'Rose Gold Charm Bracelet',
-                'description': 'A delightful 18K rose gold charm bracelet featuring six hand-crafted charms including a star, heart, moon, key, flower, and butterfly. Each charm measures approximately 12mm. Length: 7 inches with lobster clasp. New charms can be added to celebrate special moments. A gift that grows with memories.',
-                'price': 16999,
-                'material': '18K Rose Gold', 'is_featured': False,
-            },
-            {
-                'category': 'Bracelets', 'image': 'j35.jpeg',
-                'name': 'Polki Bridal Bangle',
-                'description': 'A magnificent broad bangle in 22K gold featuring uncut polki diamonds set in kundan style. Width: 25mm. Diameter: 62mm. The elaborate floral pattern is studded with polki diamonds of various sizes. Meenakari enamel work on the reverse adds a beautiful finishing touch. A bridal showstopper.',
-                'price': 124999,
-                'material': '22K Gold, Polki Diamond, Enamel', 'is_featured': True,
-            },
-            {
-                'category': 'Bracelets', 'image': 'j36.jpeg',
-                'name': 'Sapphire Link Bracelet',
-                'description': 'A sophisticated link bracelet in 18K yellow gold featuring alternating sapphire and diamond links. Length: 7 inches with box clasp. Total sapphire weight: 2 carats. Total diamond weight: 0.5 carats. The alternating pattern creates a beautiful rhythm of blue and white sparkle.',
-                'price': 45999, 'sale_price': 38999,
-                'material': '18K Gold, Sapphire, Diamond', 'is_featured': False,
-            },
-            {
-                'category': 'Bracelets', 'image': 'j37.jpeg',
-                'name': 'Pearl Strand Bracelet',
-                'description': 'An elegant single-strand bracelet featuring 18 matched freshwater pearls with a 22K gold box clasp set with a small diamond. Pearls: 8mm diameter, AAA luster, minimal blemishes. Length: 7 inches. The pearls are hand-knotted between each pearl to prevent loss. A timeless classic.',
-                'price': 11999,
-                'material': '22K Gold, Freshwater Pearl', 'is_featured': False,
-            },
-            {
-                'category': 'Bracelets', 'image': 'j38.jpeg',
-                'name': 'Engraved Gold Kada',
-                'description': 'A bold and beautiful 22K gold kada (broad bangle) with intricate floral engravings and a spiral design. Diameter: 60mm. Width: 20mm. Weight: approximately 40 grams. This single bangle makes a strong statement at any occasion. A must-have addition to every jewellery wardrobe.',
-                'price': 52999,
-                'material': '22K Gold', 'is_featured': False,
-            },
-            # ANKLETS (j39–j44)
-            {
-                'category': 'Anklets', 'image': 'j39.jpeg',
-                'name': 'Traditional Payal Set',
-                'description': 'A pair of traditional 22K gold payal (anklets) featuring delicate chain work with small ghunghru (bells) that make a soft, melodic sound with every step. Each anklet: 25cm length. Safety clasp. Weight: 8 grams per anklet. The sound of gold payal is the sound of timeless elegance.',
-                'price': 22999,
-                'material': '22K Gold', 'is_featured': True,
-            },
-            {
-                'category': 'Anklets', 'image': 'j40.jpeg',
-                'name': 'Diamond Anklet',
-                'description': 'A modern and glamorous anklet in 18K white gold with prong-set diamonds. The anklet features 24 round brilliant-cut diamonds totaling 0.5 carats. VS1 clarity, F color. Length: 10 inches with lobster clasp and 1-inch extender. This luxurious piece elevates any outfit and draws attention to graceful ankles.',
-                'price': 34999, 'sale_price': 28999,
-                'material': '18K White Gold, Diamond 0.5ct', 'is_featured': True,
-            },
-            {
-                'category': 'Anklets', 'image': 'j41.jpeg',
-                'name': 'Gold Bead Anklet',
-                'description': 'A charming anklet in 22K gold featuring alternating smooth and diamond-cut beads. Length: 26cm with lobster clasp. Weight: 4 grams. The varied bead sizes (3mm and 5mm) create a playful, textural look. Suitable for everyday wear and festive occasions.',
-                'price': 8999,
-                'material': '22K Gold', 'is_featured': False,
-            },
-            {
-                'category': 'Anklets', 'image': 'j42.jpeg',
-                'name': 'Ruby Gold Anklet',
-                'description': 'A vibrant gold anklet featuring small ruby beads interspersed between gold links. The 22K gold chain with 18 round rubies (2mm each) creates a colorful pop of red against the ankles. Length: 25cm. Perfect for ethnic wear, sarees, and festive celebrations.',
-                'price': 14999,
-                'material': '22K Gold, Ruby', 'is_featured': False,
-            },
-            {
-                'category': 'Anklets', 'image': 'j43.jpeg',
-                'name': 'Butterfly Charm Anklet',
-                'description': 'A whimsical 18K rose gold anklet featuring three-dimensional butterfly charms at regular intervals. Each butterfly is pavé-set with tiny diamonds. Total diamond weight: 0.2 carats. Length: 10 inches. The delicate chain connects the butterflies in a light, airy design perfect for summer and beach weddings.',
-                'price': 18999,
-                'material': '18K Rose Gold, Diamond', 'is_featured': False,
-            },
-            {
-                'category': 'Anklets', 'image': 'j44.jpeg',
-                'name': 'Ghunghru Payal Set',
-                'description': 'A classic pair of 22K gold ghunghru anklets featuring multiple layers of tiny bells that create beautiful music with every step. The broad design (width: 20mm) features intricate gold work and 48 tiny bells per anklet. Length: 25cm. Beloved by classical dancers, brides, and jewellery collectors.',
-                'price': 41999, 'sale_price': 34999,
-                'material': '22K Gold', 'is_featured': False,
-            },
-            # SETS (j45–j51)
-            {
-                'category': 'Sets', 'image': 'j45.jpeg',
-                'name': 'Bridal Grand Set',
-                'description': 'The complete bridal jewellery package featuring a magnificent 22K gold necklace, matching jhumka earrings, maang tikka, and hand harness. The set features rubies, emeralds, and polki diamonds in traditional Rajasthani style. Total gold weight: approximately 120 grams. Your perfect wedding day companion.',
-                'price': 299999,
-                'material': '22K Gold, Ruby, Emerald, Polki Diamond', 'is_featured': True,
-            },
-            {
-                'category': 'Sets', 'image': 'j46.jpeg',
-                'name': 'Diamond Necklace Earring Set',
-                'description': 'An elegant diamond jewellery set in 18K white gold featuring a graduated diamond necklace and matching stud earrings. Necklace length: 17 inches with 21 brilliant-cut diamonds. Earring diamonds: 0.5 carats each. Total diamond weight: 3.5 carats. VS2 clarity, F–G color.',
-                'price': 185000, 'sale_price': 159999,
-                'material': '18K White Gold, Diamond 3.5ct', 'is_featured': True,
-            },
-            {
-                'category': 'Sets', 'image': 'j47.jpeg',
-                'name': 'Pearl Complete Jewellery Set',
-                'description': 'A sophisticated pearl jewellery set including a 3-strand pearl necklace (17 inches), pearl drop earrings, and pearl bracelet (7 inches). All pieces feature hand-selected freshwater pearls of matching size (8mm) and luster strung on 18K gold findings. Elegant and timeless.',
-                'price': 42999,
-                'material': '18K Gold, Freshwater Pearl', 'is_featured': False,
-            },
-            {
-                'category': 'Sets', 'image': 'j48.jpeg',
-                'name': 'Emerald Jewellery Set',
-                'description': 'A dazzling set featuring a Colombian emerald and diamond necklace, matching drop earrings, and cocktail ring in 18K yellow gold. Total emerald weight: 8 carats. Total diamond weight: 2 carats. A complete green-gold statement for gala events, cocktail parties, and celebrations.',
-                'price': 235000,
-                'material': '18K Gold, Colombian Emerald 8ct, Diamond 2ct', 'is_featured': False,
-            },
-            {
-                'category': 'Sets', 'image': 'j49.jpeg',
-                'name': 'Daily Wear Gold Set',
-                'description': 'A practical and beautiful everyday jewellery set in 22K gold including a delicate chain necklace (18 inches), small hoop earrings (20mm diameter), and a slim bangle (62mm). Each piece is designed to be light and comfortable for daily wear while still looking polished and elegant.',
-                'price': 28999,
-                'material': '22K Gold', 'is_featured': False,
-            },
-            {
-                'category': 'Sets', 'image': 'j50.jpeg',
-                'name': 'Rose Gold Trio Set',
-                'description': 'A romantic rose gold set in 18K gold including a floral pendant necklace (16 inches), matching pavé stud earrings, and a thin eternity band. Each piece features pavé-set diamonds in a shared floral design language. Total diamond weight: 0.6 carats. A perfect gift for a loved one.',
-                'price': 45999, 'sale_price': 38999,
-                'material': '18K Rose Gold, Diamond 0.6ct', 'is_featured': True,
-            },
-            {
-                'category': 'Sets', 'image': 'j51.jpeg',
-                'name': 'Kundan Bridal Set',
-                'description': 'An opulent kundan bridal set featuring a layered necklace, jhumka earrings, maang tikka, and a set of four bangles in 22K gold with kundan work, pearls, and meenakari enamel. Total gold weight: approximately 90 grams. This set is the embodiment of royal Indian bridal tradition.',
-                'price': 189999,
-                'material': '22K Gold, Kundan, Pearl, Enamel', 'is_featured': True,
-            },
+            # EARRINGS
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 01.jpeg', 'name': 'Classic Gold Stud Earrings', 'description': 'Elegant gold stud earrings designed with anti-tarnish coating for long-lasting shine. These hypoallergenic studs are perfect for sensitive skin and everyday wear. Waterproof and sweat-proof design ensures they stay shiny all day long.', 'price': 599, 'sale_price': 449, 'material': 'Premium Alloy, Gold Finish', 'is_featured': True},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 02.jpeg', 'name': 'Floral Drop Earrings', 'description': 'Beautiful floral drop earrings with anti-tarnish premium finish. These lightweight earrings are ideal for college wear and casual outings. Hypoallergenic material ensures comfort for all-day wear.', 'price': 699, 'sale_price': 499, 'material': 'Premium Alloy, Gold Finish', 'is_featured': True},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 03.jpeg', 'name': 'Crystal Hoop Earrings', 'description': 'Stunning crystal hoop earrings with waterproof anti-tarnish coating. These trendy hoops stay shiny even in water and sweat. Perfect for working professionals who want to look stylish all day.', 'price': 799, 'sale_price': None, 'material': 'Premium Alloy, Crystal', 'is_featured': True},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 04.jpeg', 'name': 'Pearl Stud Earrings', 'description': 'Delicate pearl stud earrings with anti-tarnish gold finish. These skin-friendly earrings are perfect for office wear and special occasions. The pearl design adds a touch of elegance to any outfit.', 'price': 649, 'sale_price': 499, 'material': 'Premium Alloy, Faux Pearl', 'is_featured': False},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 05.jpeg', 'name': 'Rose Gold Jhumka', 'description': 'Traditional jhumka earrings in trendy rose gold anti-tarnish finish. These sweat-proof earrings are perfect for festive occasions and daily wear. Lightweight design ensures all-day comfort.', 'price': 899, 'sale_price': 699, 'material': 'Premium Alloy, Rose Gold Finish', 'is_featured': True},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 06.jpeg', 'name': 'Statement Chandbali Earrings', 'description': 'Bold chandbali earrings with premium anti-tarnish coating. These waterproof statement earrings are perfect for parties and celebrations. Hypoallergenic design is safe for all skin types.', 'price': 999, 'sale_price': 749, 'material': 'Premium Alloy, Gold Finish', 'is_featured': True},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 07.jpeg', 'name': 'Minimal Bar Earrings', 'description': 'Simple and elegant bar earrings with waterproof anti-tarnish finish. These minimalist earrings are perfect for everyday styling. Skin-friendly material suitable for sensitive skin.', 'price': 499, 'sale_price': None, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 08.jpeg', 'name': 'Butterfly Stud Earrings', 'description': 'Cute butterfly stud earrings with anti-tarnish premium coating. These hypoallergenic studs are perfect for college girls and young women. Waterproof design keeps them shiny all day.', 'price': 549, 'sale_price': 399, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 09.jpeg', 'name': 'Tassel Drop Earrings', 'description': 'Trendy tassel drop earrings with anti-tarnish finish. These lightweight earrings add drama to any outfit. Sweat-proof design ensures they look great from morning to night.', 'price': 749, 'sale_price': None, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 10.jpeg', 'name': 'Geometric Hoop Earrings', 'description': 'Modern geometric hoop earrings with anti-tarnish waterproof coating. Perfect for working women who love contemporary jewellery. Hypoallergenic material is safe for sensitive skin.', 'price': 699, 'sale_price': 549, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 11.jpeg', 'name': 'Kundan Stud Earrings', 'description': 'Traditional kundan stud earrings with modern anti-tarnish finish. These waterproof earrings blend tradition with contemporary style. Perfect for festive occasions and ethnic wear.', 'price': 849, 'sale_price': 649, 'material': 'Premium Alloy, Kundan Work', 'is_featured': True},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 12.jpeg', 'name': 'Star Charm Earrings', 'description': 'Playful star charm earrings with anti-tarnish gold coating. These cute earrings are perfect for college girls and casual outings. Hypoallergenic and skin-friendly for all-day wear.', 'price': 549, 'sale_price': None, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 13.jpeg', 'name': 'Oval Link Earrings', 'description': 'Stylish oval link earrings with waterproof anti-tarnish finish. These minimal earrings are perfect for everyday styling at office or college. Long-lasting shine guaranteed.', 'price': 649, 'sale_price': 499, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 14.jpeg', 'name': 'Floral Jhumka Earrings', 'description': 'Beautiful floral jhumka earrings with premium anti-tarnish coating. These sweat-proof earrings are perfect for everyday ethnic wear. Lightweight design ensures comfortable all-day wear.', 'price': 899, 'sale_price': 699, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 15.jpeg', 'name': 'Leaf Drop Earrings', 'description': 'Elegant leaf drop earrings with anti-tarnish waterproof finish. These nature-inspired earrings add grace to any outfit. Hypoallergenic material keeps skin comfortable all day.', 'price': 749, 'sale_price': None, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 16.jpeg', 'name': 'Diamond Cut Hoop Earrings', 'description': 'Sparkling diamond-cut hoop earrings with anti-tarnish premium coating. These waterproof hoops catch the light beautifully. Perfect for parties and special occasions.', 'price': 799, 'sale_price': 649, 'material': 'Premium Alloy, Gold Finish', 'is_featured': True},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 17.jpeg', 'name': 'Moon & Star Earrings', 'description': 'Celestial moon and star earrings with anti-tarnish finish. These trendy earrings are perfect for college girls. Waterproof and sweat-proof for all-day wear.', 'price': 599, 'sale_price': None, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 18.jpeg', 'name': 'Thread Tassel Earrings', 'description': 'Boho-style thread tassel earrings with anti-tarnish gold accents. These lightweight earrings add colour and movement to your look. Perfect for casual and festive occasions.', 'price': 649, 'sale_price': 499, 'material': 'Premium Alloy, Thread', 'is_featured': False},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 19.jpeg', 'name': 'Coin Drop Earrings', 'description': 'Boho coin drop earrings with waterproof anti-tarnish finish. These trendy earrings are perfect for casual and festive wear. Hypoallergenic design for sensitive skin.', 'price': 699, 'sale_price': None, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 20.jpeg', 'name': 'Twisted Gold Hoops', 'description': 'Elegant twisted gold hoops with anti-tarnish premium coating. These waterproof hoops are perfect for everyday wear and special occasions. Long-lasting shine with minimal maintenance.', 'price': 749, 'sale_price': 599, 'material': 'Premium Alloy, Gold Finish', 'is_featured': True},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 21.jpeg', 'name': 'Peacock Jhumka Earrings', 'description': 'Stunning peacock design jhumka earrings with anti-tarnish finish. These hypoallergenic earrings are perfect for ethnic occasions and weddings. Waterproof design keeps them shiny longer.', 'price': 999, 'sale_price': 799, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 22.jpeg', 'name': 'Square Stud Earrings', 'description': 'Modern square stud earrings with anti-tarnish premium coating. These minimal studs are perfect for office and casual wear. Skin-friendly material for comfortable all-day use.', 'price': 549, 'sale_price': None, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 23.jpeg', 'name': 'Floral Chandelier Earrings', 'description': 'Glamorous floral chandelier earrings with anti-tarnish waterproof finish. These statement earrings are perfect for parties and celebrations. Premium quality with long-lasting shine.', 'price': 1099, 'sale_price': 849, 'material': 'Premium Alloy, Gold Finish', 'is_featured': True},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 24.jpeg', 'name': 'Heart Stud Earrings', 'description': 'Sweet heart stud earrings with anti-tarnish gold finish. These cute earrings are perfect for everyday wear and gifting. Hypoallergenic and waterproof for all-day comfort.', 'price': 499, 'sale_price': 399, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Earrings', 'image': 'Earrings/Earring 25.jpeg', 'name': 'Shell Drop Earrings', 'description': 'Boho shell drop earrings with anti-tarnish premium accents. These trendy earrings add a coastal vibe to your style. Waterproof and sweat-proof for beach and outdoor wear.', 'price': 699, 'sale_price': None, 'material': 'Shell, Premium Alloy', 'is_featured': False},
+            {'category': 'Earrings', 'image': 'Earrings/Earrings 26.jpeg', 'name': 'Long Chain Earrings', 'description': 'Dramatic long chain earrings with waterproof anti-tarnish finish. These statement earrings are perfect for evening occasions and parties. Premium quality with long-lasting shine.', 'price': 849, 'sale_price': 649, 'material': 'Premium Alloy, Gold Finish', 'is_featured': True},
+            # CHAINS
+            {'category': 'Chains', 'image': 'Chains/Chain 16.jpeg', 'name': 'The Fortuna Horseshoe Amulet Snake Chain', 'description': 'A sleek, sculptural horseshoe pendant symbolizing protection and luck, suspended on a premium liquid-gold snake chain. Features a mirror-like glow that catches every light. Smooth snake chain designed not to pull on fine hair or irritate the neck. Solid construction for daily, 24/7 wear. Anti-tarnish waterproof coating ensures long-lasting shine.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Gold Finish', 'is_featured': True},
+            {'category': 'Chains', 'image': 'Chains/Chain 01.jpeg', 'name': 'The Prism Heart Drop Lariat', 'description': 'A vibrant vertical drop necklace featuring seven multi-colored heart crystals. Designed for those who love dopamine dressing. The Y-silhouette elongates the neckline and is perfect for layering. Each colored crystal is safely enclosed in a gold frame. High-quality Zirconia stones that maintain their sparkle even after water exposure.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Crystal', 'is_featured': True},
+            {'category': 'Chains', 'image': 'Chains/Chain 02.jpeg', 'name': 'The Solstice Radiance Heart Pendant', 'description': 'A vintage-inspired heart featuring a textured sunburst pattern with a brilliant crystal core. Deep-etched rays reflect light in a starburst effect. Satellite chain features delicate gold beads for a trendy, textured look. Premium clear crystal center adds an elegant touch. Anti-tarnish and waterproof for lasting shine.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, Crystal', 'is_featured': False},
+            {'category': 'Chains', 'image': 'Chains/Chain 03.jpeg', 'name': 'The Eternity Layered Heart Necklace', 'description': 'A modern, double-frame heart design with a shimmering crystal halo. A top-seller for romantic gifting. Features trending elongated paperclip chain links for a 2026 aesthetic. Hand-set micro-pave crystals offer a high-end fine jewelry shimmer. Lightweight design provides a substantial look without the heavy weight on the neck.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Crystal', 'is_featured': True},
+            {'category': 'Chains', 'image': 'Chains/Chain 04.jpeg', 'name': 'The Scripted Love 3D Puffy Heart', 'description': 'A classic, high-shine 3D puffy heart engraved with "Love" in an elegant script font. Bold, rounded heart that stands out against any outfit. Precision engraving is deep-etched to remain visible for years. The perfect staple piece that matches any outfit from casual to formal. Waterproof anti-tarnish finish for daily wear.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Chains', 'image': 'Chains/Chain 05.jpeg', 'name': 'The Lumina Heart Satellite Necklace', 'description': 'A minimalist dream featuring a smooth, high-shine puffy heart pendant on a unique satellite beaded chain. Subtle gold beads add a modern twist to the classic heart necklace. Mirror-finish heart is highly reflective for a premium real-gold look. Lightweight and perfectly balanced for stacking with other chains.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Chains', 'image': 'Chains/Chain 06.jpeg', 'name': 'The Opulence Shell Heart Pendant', 'description': 'A sophisticated heart pendant featuring a genuine Mother-of-Pearl style inlay, framed by a thick gold border on a twisted rope chain. Iridescent inlay catches the light with a soft, pearly shimmer. Rope chain provides a sturdy, luxurious vintage feel. Raised gold edge gives extra protection for the inlay. Anti-tarnish waterproof design.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, Pearl Inlay', 'is_featured': True},
+            {'category': 'Chains', 'image': 'Chains/Chain 07.jpeg', 'name': 'The Stellar Princess Cut Necklace', 'description': 'A dainty, ultra-minimalist piece featuring a single princess-cut (square) AAA-grade Zirconia on a shimmering petal-link chain. Princess cut brilliance offers a modern, sharp sparkle. Petal chain links are flattened to reflect light like tiny mirrors. The perfect barely-there piece for professional or daily wear.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Zirconia', 'is_featured': False},
+            {'category': 'Chains', 'image': 'Chains/Chain 08.jpeg', 'name': 'The Midnight Emerald-Cut Noir Pendant', 'description': 'A bold, gender-neutral geometric pendant featuring a deep black rectangular inlay set in a sleek gold frame. Clean geometric lines appeal to fans of modern, architectural jewelry. Suspended on a high-durability box chain that resists snapping. The deep black center makes the gold frame pop brilliantly. Waterproof anti-tarnish finish.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Black Inlay', 'is_featured': False},
+            {'category': 'Chains', 'image': 'Chains/Chain 09.jpeg', 'name': 'The Eclipse Sculptural Oval Necklace', 'description': 'A designer-inspired piece featuring an oval black stone encased in a molten or organic-shaped gold frame. The irregular gold border gives it a custom, handmade boutique look. Features a premium, silky-smooth snake chain that sits flat against the skin. Large enough to be a focal point while remaining chic and simple.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Black Stone', 'is_featured': False},
+            {'category': 'Chains', 'image': 'Chains/Chain 10.jpeg', 'name': 'The Aria Twisted Heart Satellite Necklace', 'description': 'An elegant open heart pendant with a beautiful rope-texture finish, paired with a delicate gold beaded satellite chain. Twisted rope detail adds a sophisticated, high-end texture to a classic symbol. Beaded satellite chain provides extra shimmer and a modern aesthetic. The open-heart design feels effortless and lightweight on the neck.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Chains', 'image': 'Chains/Chain 11.jpeg', 'name': 'The Heritage Heart Floral Mangalsutra', 'description': 'A stunning fusion piece featuring a heart-shaped pendant with an inner floral crystal motif, set on a traditional black-beaded gold chain. Perfectly blends sacred tradition with modern jewelry design. Hand-set micro-pave Zirconia crystals in the floral center for maximum brilliance. Traditional black beads are securely integrated into the gold-plated chain.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, Crystal, Black Beads', 'is_featured': True},
+            {'category': 'Chains', 'image': 'Chains/Chain 12.jpeg', 'name': 'The Guardian Evil Eye Heart Layering Set', 'description': 'A powerful symbol of protection featuring a vibrant blue Evil Eye set inside a crystal-encrusted heart, paired with a trendy flat herringbone chain. Combines a sleek flat snake chain with a dainty pendant chain for a pre-layered effect. High-quality enamel Nazar eye surrounded by a sparkling halo. Bold gold herringbone chain provides a liquid-metal shine.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Enamel, Crystal', 'is_featured': False},
+            {'category': 'Chains', 'image': 'Chains/Chain 13.jpeg', 'name': 'The Serendipity Crystal Heart Lariat', 'description': 'A delicate Y-shaped lariat featuring a series of shimmering crystal-set hearts that drop elegantly down the chest. Vertical silhouette designed to elongate the neck — pairs perfectly with V-neck tops. Four individual crystal hearts catch the light from every angle. Adjustable drop gives a jewelry-forward design that feels custom-made.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Crystal', 'is_featured': False},
+            {'category': 'Chains', 'image': 'Chains/Chain 14.jpeg', 'name': 'The Unity Eternal Knot Heart', 'description': 'A minimalist masterpiece featuring a polished gold heart that transitions into a knot design, representing unbreakable bonds. Sculptural, seamless, fluid look that follows the Quiet Luxury trend. Suspended on a premium, smooth-gliding silky snake chain for ultimate comfort. Expertly buffed to a high-shine finish that rivals solid gold.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Chains', 'image': 'Chains/Chain 15.jpeg', 'name': 'The Coquette Ribbon Bow Necklace', 'description': 'A charming and feminine golden bow pendant suspended on a delicate beaded satellite chain. Perfect for the Coquette and romantic fashion aesthetic. Subtle gold beads on the satellite chain add a touch of texture and extra sparkle. Elegant enough for a formal event, yet playful enough for daily wear.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Chains', 'image': 'Chains/Chain 17.jpeg', 'name': 'The Manifest 11:11 Angel Number Necklace', 'description': 'A sleek rectangular bar pendant engraved with the powerful angel number 11:11. Designed for those who believe in magic and synchronicity. A daily reminder to stay positive and manifest your dreams. Clean, modern geometric design that looks stunning when layered. Deep-etched precision engraving ensures the numbers never fade.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Chains', 'image': 'Chains/Chain 18.jpeg', 'name': 'The Secret Garden Rose Inlay Necklace', 'description': 'A boutique-style oval medallion with an organic molten gold edge, featuring a beautiful golden rose embossed on a white pearlescent inlay. The irregular gold frame gives it a custom, handmade feel. Combines classic floral motifs with a modern, textured gold finish. Paired with a fine ball chain for a delicate, feminine look.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Pearl Inlay', 'is_featured': False},
+            {'category': 'Chains', 'image': 'Chains/Chain 19.jpeg', 'name': 'The Lucky Charm Zirconia Clover', 'description': 'A stunning four-leaf clover pendant where each leaf is a heart-shaped, high-grade Zirconia crystal. Set on a silky snake chain. AAA-grade crystals catch the light from every angle for maximum brilliance. Combines the Good Luck clover symbol with the symbol of love (hearts). Sturdy, polished gold loop keeps the pendant securely in place.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Zirconia', 'is_featured': True},
+            # BRACELETS
+            {'category': 'Bracelets', 'image': 'Bracelet/Bracelet 01.jpeg', 'name': 'The Olympus Diamond Greek Key Bangle', 'description': 'A bold, architectural cuff featuring the iconic Greek fret pattern, fully encrusted with shimmering micro-crystals for a high-jewelry look. Represents infinity and unity through the traditional Greek pattern. Every line of the pattern is accented with precision-cut stones. Mirror-polished inside for a silk-smooth finish and maximum comfort. Anti-tarnish waterproof coating.', 'price': 349, 'sale_price': None, 'material': 'Premium Alloy, Crystal', 'is_featured': True},
+            {'category': 'Bracelets', 'image': 'Bracelet/Bracelet 02.jpeg', 'name': 'The Helix Diamond Link Bracelet', 'description': 'A sophisticated bangle that mimics the look of a luxury watch strap with alternating polished gold and crystal-studded links. Provides the structured look of a bangle with the visual texture of a link bracelet. Boutique finish that is perfect for stacking with a gold watch. Anti-tarnish waterproof design for lasting shine and daily comfort.', 'price': 349, 'sale_price': None, 'material': 'Premium Alloy, Crystal', 'is_featured': True},
+            {'category': 'Bracelets', 'image': 'Bracelet/Bracelet 03.jpeg', 'name': 'The Pure High-Shine Gold Kada', 'description': 'A classic, ultra-slim gold band with a flat mirror-finish surface. The ultimate Quiet Luxury staple. Lightweight design for maximum comfort during long workdays. The perfect base piece for any jewelry stack. Anti-tarnish and waterproof for worry-free daily wear. Hypoallergenic and skin-friendly for sensitive skin.', 'price': 349, 'sale_price': None, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Bracelets', 'image': 'Bracelet/Bracelet 04.jpeg', 'name': 'The Trinity Layered Statement Bangle', 'description': 'A pre-stacked masterpiece featuring three distinct textures: a beaded edge, a sparkling crystal center, and a bold curb chain motif. Get the look of three bracelets with the convenience of one. Contrasting textures capture light from every angle for a dramatic effect. Anti-tarnish waterproof coating ensures long-lasting beauty.', 'price': 349, 'sale_price': None, 'material': 'Premium Alloy, Crystal', 'is_featured': True},
+            {'category': 'Bracelets', 'image': 'Bracelet/Bracelet 05.jpeg', 'name': 'The Prosperity Clover Cuff', 'description': 'A wide, open-worked cuff featuring four gold bands meeting at a central sunburst clover motif outlined in shimmering crystals. Designer-inspired look that represents luck and fortune. Breathable multi-band structure feels light on the wrist. Anti-tarnish waterproof finish for lasting shine. Perfect for festive occasions and everyday wear.', 'price': 349, 'sale_price': None, 'material': 'Premium Alloy, Crystal', 'is_featured': False},
+            {'category': 'Bracelets', 'image': 'Bracelet/Bracelet 06.jpeg', 'name': 'The Vanguard Evil Eye Cable Bangle', 'description': 'A modern take on protection jewelry featuring multiple Evil Eye charms and crystal spacers on a flexible gold-toned cable wire. Magnetic or screw clasp stays securely on the wrist even during active movement. Multiple charms ensure the protection symbol is always visible. Waterproof anti-tarnish design for daily wear.', 'price': 349, 'sale_price': None, 'material': 'Premium Alloy, Enamel, Crystal', 'is_featured': False},
+            {'category': 'Bracelets', 'image': 'Bracelet/Bracelet 07.jpeg', 'name': 'The Parallel Crystal Groove Bangle', 'description': 'A structured gold bangle featuring parallel recessed grooves with a central line of brilliant-cut crystals. Geometric precision with clean, sharp lines for a professional look. Box clasp features a high-quality side-opening mechanism. Waterproof anti-tarnish coating ensures long-lasting shine. Perfect for office and formal occasions.', 'price': 349, 'sale_price': None, 'material': 'Premium Alloy, Crystal', 'is_featured': False},
+            {'category': 'Bracelets', 'image': 'Bracelet/Bracelet 08.jpeg', 'name': 'The Olympus Greek Key Bangle', 'description': 'A bold, architectural cuff featuring the iconic Greek fret pattern in a sleek, all-metal polished finish. Represents infinity and unity through the timeless Greek design. Secure hinge clasp allows easy snap-on and off with a seamless side lock. Premium high-gloss gold finish that is anti-tarnish and waterproof for everyday confidence.', 'price': 349, 'sale_price': None, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Bracelets', 'image': 'Bracelet/Bracelet 09.jpeg', 'name': 'The Noir Royale Triple Band Bangle', 'description': 'A high-fashion wide cuff featuring triple gold bands accented with three square-cut black onyx-style stones and a crystal-encrusted border. High contrast — deep black stones against the gold and white crystals create a luxurious Royal look. Best worn alone as a focal point for evening wear. Anti-tarnish waterproof design.', 'price': 349, 'sale_price': None, 'material': 'Premium Alloy, Black Stone, Crystal', 'is_featured': True},
+            {'category': 'Bracelets', 'image': 'Bracelet/Bracelet 10.jpeg', 'name': 'The Matrix Dual-Texture Bangle', 'description': 'A unique split-design bangle featuring a textured grid pattern on one half and a continuous line of crystals on the other. Dual aesthetic — can be rotated to show either the bold texture or the elegant sparkle. Durable hinge designed for longevity and frequent wear. Anti-tarnish waterproof finish for lasting beauty.', 'price': 349, 'sale_price': None, 'material': 'Premium Alloy, Crystal', 'is_featured': False},
+            {'category': 'Bracelets', 'image': 'Bracelet/Bracelet 11.jpeg', 'name': 'The Midnight Empress Triple Band Bangle', 'description': 'A stunning wide-frame cuff featuring five parallel gold bands accented with three square-cut black onyx-style stones and brilliant crystal borders. Top and bottom bands are fully encrusted with AAA-grade Zirconia. High-contrast luxury look with deep black stones against gold. Sturdy side-opening hinge mechanism for easy wear.', 'price': 349, 'sale_price': None, 'material': 'Premium Alloy, Black Stone, Zirconia', 'is_featured': False},
+            {'category': 'Bracelets', 'image': 'Bracelet/Bracelet 12.jpeg', 'name': 'The Vendome Crystal Nail Bangle', 'description': 'A designer-inspired masterpiece that transforms a simple nail into a luxury accessory — sleek minimal style. A worldwide trending design that represents strength and fashion. Features hand-set crystals on the nail head and tip for a premium touch. Anatomically designed to sit perfectly on the wrist. Anti-tarnish waterproof coating.', 'price': 349, 'sale_price': None, 'material': 'Premium Alloy, Crystal', 'is_featured': False},
+            {'category': 'Bracelets', 'image': 'Bracelet/Bracelet 13.jpeg', 'name': 'The Vendome Crystal Nail Bangle Glam', 'description': 'A designer-inspired masterpiece that transforms a simple nail into a luxury accessory — fully encrusted glam version. A worldwide trending style that represents strength and fashion at its finest. Fully covered in hand-set crystals for an all-over sparkle effect. Flexible fit anatomically designed to sit perfectly on the wrist.', 'price': 349, 'sale_price': None, 'material': 'Premium Alloy, Crystal', 'is_featured': True},
+            # MANGALSUTRA
+            {'category': 'Mangalsutra', 'image': 'Mangalsutra/Mangalsutra 01.jpeg', 'name': 'The Radiant Bloom Mangalsutra', 'description': 'A delicate and sophisticated piece featuring a floral-inspired central pendant. The interlocking golden arcs encase a cluster of shimmering stones, creating a look that is both timeless and trendy. Sleek single-chain design with classic black beads. High-grade cubic zirconia for a diamond-like finish. Perfect for daily office wear or casual outings.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, Cubic Zirconia, Black Beads', 'is_featured': True},
+            {'category': 'Mangalsutra', 'image': 'Mangalsutra/Mangalsutra 02.jpeg', 'name': 'The Majestic Wing Mangalsutra', 'description': 'Make a statement with this nature-inspired design. The pendant features two graceful, stone-studded leafy wings that meet at a brilliant solitaire drop, symbolizing growth and togetherness. Intricate leaf detailing with micro-pave stone setting. Elegant solitaire-style hanging stone. Lightweight yet impactful design for special occasions.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, Crystal, Black Beads', 'is_featured': True},
+            {'category': 'Mangalsutra', 'image': 'Mangalsutra/Mangalsutra 03.jpeg', 'name': 'The Royal Crest Mangalsutra', 'description': 'Designed for the woman who loves intricate artistry. This piece features a symmetrical, vintage-inspired crest pattern adorned with marquise-cut stones for maximum sparkle. Ornate geometric pendant design. Premium marquise and round-cut stone combination. Adjustable chain length for a personalized fit.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, Marquise Crystal, Black Beads', 'is_featured': False},
+            {'category': 'Mangalsutra', 'image': 'Mangalsutra/Mangalsutra 04.jpeg', 'name': 'The Golden Lattice Mangalsutra', 'description': 'A contemporary take on the traditional mangalsutra. The square pendant features a unique textured lattice pattern on one side and a star-cluster of stones on the other, offering a modern 3D look. Unique textured gold-tone finish. Compact, sturdy pendant ideal for active lifestyles. Minimalist bead placement for a barely-there feel.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, Crystal, Black Beads', 'is_featured': False},
+            {'category': 'Mangalsutra', 'image': 'Mangalsutra/Mangalsutra 05.jpeg', 'name': 'The Celestial Crescent Mangalsutra', 'description': 'Capture the beauty of the night sky with this crescent moon design. The pendant is heavily embellished with clear crystals, featuring a delicate heart-shaped stone nestled in the curve. Trendy crescent moon and heart motif. High-shine polish with maximum light reflection. Pairs beautifully with both Indian and Western outfits.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, Crystal, Black Beads', 'is_featured': False},
+            {'category': 'Mangalsutra', 'image': 'Mangalsutra/Mangalsutra 06.jpeg', 'name': 'The Solitaire Square Mangalsutra', 'description': 'A bold yet minimalist choice. Features a large, princess-cut central stone held in a textured golden frame, hanging from a classic beaded chain. Statement princess-cut cubic zirconia. Unique textured basket setting. Clean, geometric look for the modern professional. Anti-tarnish and waterproof for daily office wear.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, Cubic Zirconia, Black Beads', 'is_featured': True},
+            {'category': 'Mangalsutra', 'image': 'Mangalsutra/Mangalsutra 07.jpeg', 'name': 'The Floral Harmony Mangalsutra', 'description': 'Elegance in full bloom. This horizontal pendant features a delicate row of five-petaled flowers, finished with a dainty pear-shaped drop for added movement. Intricate floral micro-pave work. Graceful pear-cut dangling stone. Ideal for festive wear or bridal gifting. Lightweight and hypoallergenic for all-day comfort.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, Crystal, Black Beads', 'is_featured': False},
+            {'category': 'Mangalsutra', 'image': 'Mangalsutra/Mangalsutra 08.jpeg', 'name': 'The Infinite Love Mangalsutra', 'description': 'Symbolize your bond with this romantic design. A shimmering heart-shaped outline is linked with a sleek infinity-style twist, creating a beautiful layered effect. Heart and infinity symbolic motif. Seamlessly integrated pendant design. Lightweight and comfortable for 24/7 wear. Waterproof anti-tarnish coating.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, Crystal, Black Beads', 'is_featured': False},
+            {'category': 'Mangalsutra', 'image': 'Mangalsutra/Mangalsutra 09.jpeg', 'name': 'The Triple Blossom Mangalsutra', 'description': 'A playful and feminine piece featuring three delicate stone flowers cascading vertically. A fresh, vertical take on traditional floral patterns. Vertical triple-flower drop pendant. Marquise-cut stones for a petal-like appearance. Perfect for deep-neck outfits. Anti-tarnish waterproof design for lasting beauty.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, Marquise Crystal, Black Beads', 'is_featured': False},
+            {'category': 'Mangalsutra', 'image': 'Mangalsutra/Mangalsutra 10.jpeg', 'name': 'The Royal Teardrop Mangalsutra', 'description': 'Pure luxury in a compact form. This pendant features a majestic crown-like top that flows into a halo-set teardrop stone, radiating classic royal vibes. Premium teardrop halo setting. Gold-beaded chain detailing for a traditional touch. High-grade stones with exceptional brilliance. Waterproof anti-tarnish finish.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, Halo Crystal, Black Beads', 'is_featured': True},
+            {'category': 'Mangalsutra', 'image': 'Mangalsutra/Mangalsutra 11.jpeg', 'name': 'The Ruby Rose Mangalsutra', 'description': 'A touch of color for the traditional soul. Features a sparkling quatrefoil floral pendant with a vibrant ruby-pink teardrop bead hanging gracefully at the center. Eye-catching ruby-colored accent stone. Classic floral motif with high-grade cubic zirconia. Delicate gold-beaded chain for an ethnic appeal. Hypoallergenic and skin-friendly.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, CZ, Ruby Accent, Black Beads', 'is_featured': False},
+            {'category': 'Mangalsutra', 'image': 'Mangalsutra/Mangalsutra 12.jpeg', 'name': 'The Grand Blossom Mangalsutra', 'description': 'A lavish, sprawling floral design that sits beautifully on the collarbone. Multiple smaller blossoms lead to a large, brilliant central flower for a truly festive look. Multi-flower garland style pendant. High-intensity sparkle with mixed-cut stones. Bold design perfect for weddings and celebrations.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, Mixed Crystal, Black Beads', 'is_featured': True},
+            {'category': 'Mangalsutra', 'image': 'Mangalsutra/Mangalsutra 13.jpeg', 'name': 'The Entwined Infinity Mangalsutra', 'description': 'Modernity meets romance. Features two interlocking stone-studded ovals, accented by a tiny floral cluster on the side, representing two lives beautifully joined. Unique interlocking oval infinity pendant. Asymmetrical floral detailing. Sleek and contemporary; pairs well with office wear. Waterproof anti-tarnish coating.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, Crystal, Black Beads', 'is_featured': False},
+            {'category': 'Mangalsutra', 'image': 'Mangalsutra/Mangalsutra 14.jpeg', 'name': 'The Petal Arch Mangalsutra', 'description': 'A wide, arched pendant that follows the natural curve of your neckline. Each petal is a shimmering marquise stone, meeting at a central round-cut brilliant. Wide arch silhouette for a fuller look. Premium marquise-cut stone setting. Elegant and lightweight despite its grand appearance. Anti-tarnish waterproof design.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, Marquise Crystal, Black Beads', 'is_featured': False},
+            {'category': 'Mangalsutra', 'image': 'Mangalsutra/Mangalsutra 15.jpeg', 'name': 'The Onyx Teardrop Mangalsutra', 'description': 'For the woman who loves bold contrasts. This premium piece features a royal halo setting surrounding a deep, mystical black onyx-style stone. Unique black central teardrop stone. Luxurious double-beaded chain design. High-fashion look that stands out in any crowd. Waterproof anti-tarnish coating for lasting beauty.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, Black Stone, Black Beads', 'is_featured': False},
+            {'category': 'Mangalsutra', 'image': 'Mangalsutra/Mangalsutra 16.jpeg', 'name': 'The Triple Halo Mangalsutra', 'description': 'Triple the brilliance! Features three distinct circular and teardrop halos linked together, each housing a shimmering dancing stone at its core. Unique three-halo cluster design. Full beaded traditional chain for a rich, festive feel. Exceptional light refraction that truly shines at evening events. Anti-tarnish waterproof finish.', 'price': 299, 'sale_price': None, 'material': 'Premium Alloy, Halo Crystal, Black Beads', 'is_featured': True},
+            # RINGS
+            {'category': 'Rings', 'image': 'Rings/Ring 01.jpeg', 'name': 'Gold-Tone Pave Wave Band', 'description': 'A wide, structured band with a distinctive S-curve or wave flowing through the center. One side of the wave is smooth gold while the other is encrusted with a line of pave-set cubic zirconia. Asymmetrical design creates a dynamic look that stands out compared to traditional flat bands. Anti-tarnish PVD gold coating for long-lasting shine. Polished interior for all-day comfort.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Cubic Zirconia', 'is_featured': True},
+            {'category': 'Rings', 'image': 'Rings/Ring 02.jpeg', 'name': 'Geometric Bar-Link Pave Ring', 'description': 'A structured, flat-top band divided into rectangular sections or bars. Each alternating section is inset with a cluster of micro-pave crystals, creating a rhythmic, architectural look. Segmented design with vertical gold bars providing bold contrast to the sparkling stones. High-polish mirror-like finish on the sides. Clean geometric lines for a unisex appeal.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Micro-Pave Crystal', 'is_featured': True},
+            {'category': 'Rings', 'image': 'Rings/Ring 03.jpeg', 'name': 'Tapered Pave Cathedral Ring', 'description': 'A dome-style band that is wider at the top and tapers toward the bottom. The center features a curved row of graduated crystals that follow the arc of the ring, framed by smooth, rounded gold edges. Graduated setting with stones larger in the center and smaller toward the sides. Ergonomic tapered shape for better finger movement and comfort.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Graduated Crystal', 'is_featured': False},
+            {'category': 'Rings', 'image': 'Rings/Ring 04.jpeg', 'name': 'Double-Row Inset Crystal Band', 'description': 'A thick, high-polish gold band featuring two parallel rows of brilliant crystals. The stones are flush-set (embedded into the metal), creating a smooth surface that will not snag on clothing. Sleek, low-profile flush setting highly practical for daily use. Substantial feel that is premium and heavy on the finger. Anti-tarnish waterproof coating.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Flush-Set Crystal', 'is_featured': False},
+            {'category': 'Rings', 'image': 'Rings/Ring 05.jpeg', 'name': 'Laurel Leaf Eternity Band', 'description': 'A continuous band featuring a repeating carved leaf or wheat pattern. Each leaf motif is centered with a single sparkling crystal, symbolizing growth and eternal life. Textured finish with intricate carvings for a vintage, hand-crafted look. Full eternity pattern and stones go all the way around the finger. Stackable with simple bands or statement rings.', 'price': 249, 'sale_price': None, 'material': 'Premium Alloy, Crystal', 'is_featured': True},
+            # WATCH
+            {'category': 'Watch', 'image': 'Watch/Watch 01.jpeg', 'name': 'Elegant Crystal Dial Gold Watch', 'description': 'Upgrade your everyday style with this elegant crystal dial gold watch. Designed with a sparkling crystal bezel and a beautiful patterned bracelet, this watch adds a luxurious touch to your look. Premium gold-plated finish with crystal-studded dial design. Stylish bracelet pattern strap that is lightweight and comfortable. Perfect for casual and festive wear. PAN India delivery available.', 'price': 499, 'sale_price': None, 'material': 'Premium Alloy, Crystal Bezel', 'is_featured': True},
+            {'category': 'Watch', 'image': 'Watch/Watch 02.jpeg', 'name': 'Classic Minimal Gold Wrist Watch', 'description': 'A timeless classic watch designed for modern women. Features a sleek round dial with a stylish metal strap, giving a sophisticated and elegant appearance. Elegant round dial design with premium gold finish metal strap. Lightweight and durable with a stylish minimal look. Ideal for office wear and daily fashion styling. PAN India delivery available.', 'price': 499, 'sale_price': None, 'material': 'Premium Alloy, Gold Finish', 'is_featured': True},
+            {'category': 'Watch', 'image': 'Watch/Watch 03.jpeg', 'name': 'Luxury Link Bracelet Watch', 'description': 'This luxury bracelet-style watch combines jewelry and functionality in one beautiful design. The decorative link chain strap and crystal dial make it a perfect statement piece. Jewelry-style bracelet strap with crystal embellished dial. Elegant gold finish with comfortable fit for daily wear. The perfect gift for women who love stylish accessories.', 'price': 599, 'sale_price': None, 'material': 'Premium Alloy, Crystal', 'is_featured': False},
+            {'category': 'Watch', 'image': 'Watch/Watch 04.jpeg', 'name': 'Premium Fashion Gold Watch', 'description': 'Add a touch of sophistication to your outfit with this premium fashion gold watch. The sleek round dial and elegant metal strap create a luxurious appearance suitable for both casual and formal occasions. Classic round dial with high-quality gold plating. Stylish and durable strap that is an elegant everyday accessory. Perfect for gifting.', 'price': 499, 'sale_price': None, 'material': 'Premium Alloy, Gold Finish', 'is_featured': False},
+            {'category': 'Watch', 'image': 'Watch/Watch 05.jpeg', 'name': 'Trinora Pearl Chain Bracelet Watch', 'description': 'Add elegance and charm to your everyday style with this beautiful pearl chain bracelet watch. Designed with a delicate multi-layer chain and pearl detailing, this watch perfectly combines jewelry and functionality. Elegant bracelet-style with multi-layer gold chain design. Beautiful pearl detailing with a lightweight, comfortable fit. Stylish round dial with clear numbers. Perfect for casual and festive outfits.', 'price': 899, 'sale_price': None, 'material': 'Premium Alloy, Pearl, Gold Chain', 'is_featured': True},
+            {'category': 'Watch', 'image': 'Watch/Watch 06.jpeg', 'name': 'Pink Floral Petal Charm Watch', 'description': 'A highly feminine watch featuring a small round dial with a crystal-encrusted bezel. Instead of a traditional strap, it uses a thin gold-tone chain accented with pink enamel floral charms. Enamel detailing with soft pink enamel finish that mimics flower petals. Doubles as a delicate bracelet — ideal for ethnic wear or summer dresses. Adjustable fit with lobster claw clasp and extender chain.', 'price': 599, 'sale_price': None, 'material': 'Premium Alloy, Enamel Charms, Crystal', 'is_featured': False},
+            {'category': 'Watch', 'image': 'Watch/Watch 07.jpeg', 'name': 'Gold-Tone Crystal Bezel Bangle Watch', 'description': 'A classic, sophisticated timepiece with a round white dial and a stunning crystal bezel. The strap is a semi-rigid bangle style with a distinctive split-path or cut-out design near the watch face. Pave crystal bezel encrusted with fine crystals for a high-shine luxury look. Ergonomic bangle design keeps the watch face centered on the wrist. Clean dial with easy-to-read markers balancing the ornate strap.', 'price': 599, 'sale_price': None, 'material': 'Premium Alloy, Pave Crystal, Bangle Strap', 'is_featured': False},
         ]
 
         for p_data in products_data:
             cat_name = p_data.pop('category')
-            img_name = p_data.pop('image')
-            img_path = copy_img(img_name)
             Product.objects.create(
                 category=categories[cat_name],
-                image=img_path,
                 **p_data
             )
+
+        self.stdout.write(self.style.SUCCESS(f'  Created {Product.objects.count()} products'))
 
         # ─── Testimonials ─────────────────────────────────────────────────
         self.stdout.write('Creating testimonials...')
         testimonials_data = [
             {
+                'name': 'Sneha Patil',
+                'location': 'Pune, Maharashtra',
+                'text': 'I have been wearing the anti-tarnish earrings from Trinora for 3 months now and they still look brand new! Even after wearing in rain and gym. Absolutely love the quality. Will definitely buy more.',
+                'rating': 5, 'is_active': True,
+            },
+            {
                 'name': 'Priya Sharma',
                 'location': 'Mumbai, Maharashtra',
-                'text': 'I purchased the Bridal Grand Set for my wedding and received so many compliments! The quality is exceptional and the craftsmanship is breathtaking. Trinora\'s packaging is also stunning — felt like opening a treasure chest. Will shop here for all my jewellery needs!',
+                'text': 'Ordered the layered chain necklace and the crystal bracelet. Both are absolutely stunning and have not tarnished at all even after daily wear. The packaging was beautiful too. Trinora is my go-to jewellery brand now!',
                 'rating': 5, 'is_active': True,
             },
             {
                 'name': 'Ananya Reddy',
                 'location': 'Hyderabad, Telangana',
-                'text': 'The Diamond Tennis Necklace I ordered arrived beautifully packaged and exactly as described. The diamonds are brilliant and the setting is flawless. Customer service was extremely helpful in choosing the right piece. Five stars without hesitation!',
+                'text': 'The mangalsutra I ordered is so elegant and lightweight. Perfect for office wear. The anti-tarnish quality is amazing — wears it daily and it still shines like new. Fast delivery and great packaging!',
                 'rating': 5, 'is_active': True,
             },
             {
-                'name': 'Kavitha Nair',
-                'location': 'Kochi, Kerala',
-                'text': 'Ordered the Gold Jhumka Earrings as a birthday gift for my mother. She absolutely loves them! The traditional craftsmanship reminds her of her grandmother\'s jewellery. Trinora has truly captured the essence of Indian jewellery while keeping it fresh and modern.',
+                'name': 'Kavya Nair',
+                'location': 'Bengaluru, Karnataka',
+                'text': 'Trinora jewellery is the best! I have sensitive skin but these pieces never cause any irritation. The waterproof quality is real — I wore my bracelet while swimming and it still shines. Amazing quality at this price!',
                 'rating': 5, 'is_active': True,
             },
             {
-                'name': 'Deepika Agarwal',
-                'location': 'Jaipur, Rajasthan',
-                'text': 'The Polki Statement Ring is an absolute masterpiece. I was hesitant ordering such an expensive piece online but the certificate of authenticity and detailed photos gave me confidence. It looks even better in person! The gift packaging was exquisite.',
-                'rating': 5, 'is_active': True,
-            },
-            {
-                'name': 'Meera Patel',
-                'location': 'Ahmedabad, Gujarat',
-                'text': 'Fast shipping, beautiful packaging, and the Pearl Layered Necklace exceeded my expectations. The pearls are perfectly matched and the gold quality is excellent. Trinora has earned a loyal customer for life. Already planning my next purchase!',
+                'name': 'Ritu Singh',
+                'location': 'Delhi, NCR',
+                'text': 'Bought the rose gold jhumkas and the crystal mangalsutra as a gift for my sister. She was absolutely delighted! The quality is premium and the designs are trendy yet traditional. Will recommend Trinora to everyone!',
                 'rating': 5, 'is_active': True,
             },
         ]
