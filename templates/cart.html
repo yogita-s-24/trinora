@@ -113,15 +113,7 @@
                     <p class="text-xs text-gray-400 mt-1">Inclusive of all taxes</p>
                 </div>
 
-                <!-- Promo -->
-                <div class="mb-5">
-                    <div class="flex gap-0">
-                        <input type="text" placeholder="Promo code" class="flex-1 border border-gray-200 px-3 py-2.5 text-sm outline-none focus:ring-1 focus:ring-black">
-                        <button class="bg-black text-white px-4 py-2.5 text-xs font-bold tracking-widest uppercase hover:bg-gray-800 transition-colors">Apply</button>
-                    </div>
-                </div>
-
-                <a href="#" class="block w-full bg-black text-white text-center py-4 text-xs font-bold tracking-widest uppercase hover:bg-gray-800 transition-colors mb-3">
+                <a href="{% url 'checkout' %}" class="block w-full bg-black text-white text-center py-4 text-xs font-bold tracking-widest uppercase hover:bg-gray-800 transition-colors mb-3">
                     Proceed to Checkout
                 </a>
                 <a href="{% url 'products' %}" class="block w-full text-center py-3 text-xs font-bold tracking-widest uppercase border border-gray-200 hover:bg-gray-50 transition-colors">
