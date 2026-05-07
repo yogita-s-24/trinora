@@ -14,10 +14,10 @@
             <img src="https://images.unsplash.com/photo-1611085583191-a3b181a88401?auto=format&fit=crop&w=1600&h=900&q=85" alt="Trinora Anti-Tarnish Jewellery" class="absolute inset-0 w-full h-full object-cover object-center">
             <div class="absolute inset-0" style="background:linear-gradient(to right,rgba(5,10,5,0.82) 0%,rgba(10,20,10,0.55) 50%,rgba(0,0,0,0.10) 100%);"></div>
             <div class="relative z-10 h-full flex items-center">
-                <div class="max-w-7xl mx-auto px-8 lg:px-16 w-full">
+                <div class="max-w-6xl mx-auto px-8 lg:px-16 w-full">
                     <div class="max-w-lg">
                         <p class="text-xs tracking-[0.4em] uppercase text-gold mb-5">New Collection — 2025</p>
-                        <h1 class="font-heading text-5xl md:text-6xl lg:text-7xl text-white leading-tight mb-4">
+                        <h1 class="font-heading text-4xl md:text-6xl lg:text-6xl text-white leading-tight mb-1">
                             Waterproof Jewellery<br>
                             <span class="font-display italic font-light text-gold">Every Day Beautiful</span>
                         </h1>
@@ -161,7 +161,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3" data-stagger="120">
             <!-- Large left banner -->
             <div class="md:col-span-2 relative overflow-hidden group" style="height:480px;">
-                <img src="/media/Mangalsutra/Mangalsutra 01.jpeg" alt="Mangalsutra Collection" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                <img src="/static/images/Mangalsutra/Mangalsutra 01.jpeg" alt="Mangalsutra Collection" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                 <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(0,0,0,0.78) 0%,rgba(0,0,0,0.15) 55%,transparent 100%);"></div>
                 <div class="absolute bottom-0 left-0 p-8">
                     <p class="text-xs tracking-[0.3em] uppercase text-gold mb-2">New Arrivals</p>
@@ -172,7 +172,7 @@
             <!-- Right stacked banners -->
             <div class="flex flex-col gap-3">
                 <div class="relative overflow-hidden group" style="height:232px;">
-                    <img src="/media/Earrings/Earrings 01.jpeg" alt="Earrings Collection" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <img src="/static/images/Earrings/Earrings 01.jpeg" alt="Earrings Collection" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                     <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(0,0,0,0.78) 0%,transparent 60%);"></div>
                     <div class="absolute bottom-0 left-0 p-5">
                         <p class="text-xs tracking-[0.3em] uppercase text-gold mb-1">Trending</p>
@@ -181,7 +181,7 @@
                     </div>
                 </div>
                 <div class="relative overflow-hidden group" style="height:232px;">
-                    <img src="/media/Bracelet/Bracelet 01.jpeg" alt="Bracelets Collection" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <img src="/static/images/Bracelet/Bracelet 01.jpeg" alt="Bracelets Collection" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                     <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(0,0,0,0.78) 0%,transparent 60%);"></div>
                     <div class="absolute bottom-0 left-0 p-5">
                         <p class="text-xs tracking-[0.3em] uppercase text-gold mb-1">Bestseller</p>
@@ -219,37 +219,37 @@
             <!-- Static category circles using media images -->
             <a href="{% url 'products' %}?category=earrings" class="group flex flex-col items-center gap-3">
                 <div class="w-full aspect-square rounded-full overflow-hidden border-2 border-transparent group-hover:border-gold transition-all duration-300">
-                    <img src="/media/Earrings/Earrings 01.jpeg" alt="Earrings" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <img src="/static/images/Earrings/Earrings 01.jpeg" alt="Earrings" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                 </div>
                 <span class="text-xs font-medium tracking-wider uppercase text-center">Earrings</span>
             </a>
             <a href="{% url 'products' %}?category=chains" class="group flex flex-col items-center gap-3">
                 <div class="w-full aspect-square rounded-full overflow-hidden border-2 border-transparent group-hover:border-gold transition-all duration-300">
-                    <img src="/media/Chains/Chain 01.jpeg" alt="Chains" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <img src="/static/images/Chains/Chain 01.jpeg" alt="Chains" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                 </div>
                 <span class="text-xs font-medium tracking-wider uppercase text-center">Chains</span>
             </a>
             <a href="{% url 'products' %}?category=bracelets" class="group flex flex-col items-center gap-3">
                 <div class="w-full aspect-square rounded-full overflow-hidden border-2 border-transparent group-hover:border-gold transition-all duration-300">
-                    <img src="/media/Bracelet/Bracelet 01.jpeg" alt="Bracelets" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <img src="/static/images/Bracelet/Bracelet 01.jpeg" alt="Bracelets" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                 </div>
                 <span class="text-xs font-medium tracking-wider uppercase text-center">Bracelets</span>
             </a>
             <a href="{% url 'products' %}?category=mangalsutra" class="group flex flex-col items-center gap-3">
                 <div class="w-full aspect-square rounded-full overflow-hidden border-2 border-transparent group-hover:border-gold transition-all duration-300">
-                    <img src="/media/Mangalsutra/Mangalsutra 01.jpeg" alt="Mangalsutra" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <img src="/static/images/Mangalsutra/Mangalsutra 01.jpeg" alt="Mangalsutra" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                 </div>
                 <span class="text-xs font-medium tracking-wider uppercase text-center">Mangalsutra</span>
             </a>
             <a href="{% url 'products' %}?category=rings" class="group flex flex-col items-center gap-3">
                 <div class="w-full aspect-square rounded-full overflow-hidden border-2 border-transparent group-hover:border-gold transition-all duration-300">
-                    <img src="/media/Rings/Ring 01.jpeg" alt="Rings" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <img src="/static/images/Rings/Ring 01.jpeg" alt="Rings" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                 </div>
                 <span class="text-xs font-medium tracking-wider uppercase text-center">Rings</span>
             </a>
             <a href="{% url 'products' %}?category=watch" class="group flex flex-col items-center gap-3">
                 <div class="w-full aspect-square rounded-full overflow-hidden border-2 border-transparent group-hover:border-gold transition-all duration-300">
-                    <img src="/media/Watch/Watch 01.jpeg" alt="Watch" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <img src="/static/images/Watch/Watch 01.jpeg" alt="Watch" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                 </div>
                 <span class="text-xs font-medium tracking-wider uppercase text-center">Watch</span>
             </a>
@@ -325,7 +325,7 @@
 
 <!-- ===== WHY CHOOSE TRINORA BANNER ===== -->
 <section class="relative overflow-hidden" style="min-height: 420px;">
-    <img src="/media/Chains/Chain 01.jpeg" alt="Anti-Tarnish Jewellery" class="absolute inset-0 w-full h-full object-cover">
+    <img src="/static/images/Chains/Chain 01.jpeg" alt="Anti-Tarnish Jewellery" class="absolute inset-0 w-full h-full object-cover">
     <div class="absolute inset-0 bg-black/70"></div>
     <div class="relative max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-8" style="min-height:420px;">
         <div class="text-white py-16">
@@ -405,14 +405,14 @@
             <div class="relative" data-animate="fade-right">
                 <div class="grid grid-cols-2 gap-3">
                     <div class="aspect-[3/4] overflow-hidden">
-                        <img src="/media/Mangalsutra/Mangalsutra 02.jpeg" alt="Trinora Jewellery" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                        <img src="/static/images/Mangalsutra/Mangalsutra 02.jpeg" alt="Trinora Jewellery" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
                     </div>
                     <div class="flex flex-col gap-3">
                         <div class="aspect-square overflow-hidden">
-                            <img src="/media/Earrings/Earrings 05.jpeg" alt="Trinora Earrings" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                            <img src="/static/images/Earrings/Earrings 05.jpeg" alt="Trinora Earrings" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
                         </div>
                         <div class="aspect-square overflow-hidden">
-                            <img src="/media/Bracelet/Bracelet 03.jpeg" alt="Trinora Bracelets" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                            <img src="/static/images/Bracelet/Bracelet 03.jpeg" alt="Trinora Bracelets" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
                         </div>
                     </div>
                 </div>
