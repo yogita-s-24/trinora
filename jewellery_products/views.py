@@ -1,9 +1,16 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse
-from django.core.mail import send_mail
+import hmac
+import hashlib
+
+import razorpay
+from django.conf import settings
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.http import JsonResponse, HttpResponseBadRequest
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from .models import Category, Product, Testimonial
+
+from .models import Category, Product, Testimonial, Order, OrderItem
 
 
 # ─── Cart helpers ─────────────────────────────────────────
@@ -148,3 +155,141 @@ def cart_detail(request):
         'cart_count': sum(i['quantity'] for i in cart.values()),
     }
     return render(request, 'cart.html', context)
+
+
+# ─── Checkout ─────────────────────────────────────────────
+
+INDIAN_STATES = [
+    'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
+    'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka',
+    'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram',
+    'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
+    'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
+    'Andaman and Nicobar Islands', 'Chandigarh', 'Dadra & Nagar Haveli and Daman & Diu',
+    'Delhi', 'Jammu & Kashmir', 'Ladakh', 'Lakshadweep', 'Puducherry',
+]
+
+
+def checkout(request):
+    cart = _get_cart(request)
+    if not cart:
+        messages.info(request, 'Your bag is empty.')
+        return redirect('cart_detail')
+
+    subtotal = _cart_total(cart)
+    shipping = 0 if subtotal >= 2999 else 199
+    total = subtotal + shipping
+
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name', '').strip()
+        last_name = request.POST.get('last_name', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        address_line1 = request.POST.get('address_line1', '').strip()
+        address_line2 = request.POST.get('address_line2', '').strip()
+        city = request.POST.get('city', '').strip()
+        state = request.POST.get('state', '').strip()
+        pincode = request.POST.get('pincode', '').strip()
+        payment_method = request.POST.get('payment_method', 'cod')
+
+        if not all([first_name, last_name, email, phone, address_line1, city, state, pincode]):
+            messages.error(request, 'Please fill in all required fields.')
+            context = {
+                'cart_items': list(cart.items()), 'subtotal': subtotal,
+                'shipping': shipping, 'total': total,
+                'states': INDIAN_STATES, 'form_data': request.POST,
+            }
+            return render(request, 'checkout.html', context)
+
+        order = Order.objects.create(
+            first_name=first_name, last_name=last_name,
+            email=email, phone=phone,
+            address_line1=address_line1, address_line2=address_line2,
+            city=city, state=state, pincode=pincode,
+            payment_method=payment_method,
+            subtotal=subtotal, shipping_charge=shipping, total=total,
+        )
+
+        for key, item in cart.items():
+            try:
+                product = Product.objects.get(id=int(key))
+            except Product.DoesNotExist:
+                product = None
+            OrderItem.objects.create(
+                order=order, product=product,
+                name=item['name'], price=item['price'],
+                quantity=item['quantity'], image=item.get('image', ''),
+            )
+
+        if payment_method == 'cod':
+            order.status = 'confirmed'
+            order.save()
+            _save_cart(request, {})
+            return redirect('order_success', order_number=order.order_number)
+
+        # Online – create Razorpay order
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        rz_order = client.order.create({
+            'amount': int(float(total) * 100),
+            'currency': 'INR',
+            'receipt': order.order_number,
+        })
+        order.razorpay_order_id = rz_order['id']
+        order.save()
+
+        return render(request, 'payment.html', {
+            'order': order,
+            'razorpay_key': settings.RAZORPAY_KEY_ID,
+            'razorpay_order_id': rz_order['id'],
+            'amount_paise': int(float(total) * 100),
+            'amount_display': total,
+        })
+
+    context = {
+        'cart_items': list(cart.items()),
+        'subtotal': subtotal,
+        'shipping': shipping,
+        'total': total,
+        'states': INDIAN_STATES,
+    }
+    return render(request, 'checkout.html', context)
+
+
+@csrf_exempt
+def payment_callback(request):
+    if request.method != 'POST':
+        return redirect('home')
+
+    razorpay_order_id = request.POST.get('razorpay_order_id', '')
+    razorpay_payment_id = request.POST.get('razorpay_payment_id', '')
+    razorpay_signature = request.POST.get('razorpay_signature', '')
+
+    try:
+        order = Order.objects.get(razorpay_order_id=razorpay_order_id)
+    except Order.DoesNotExist:
+        messages.error(request, 'Order not found.')
+        return redirect('cart_detail')
+
+    # Verify signature
+    msg = f'{razorpay_order_id}|{razorpay_payment_id}'.encode()
+    expected = hmac.new(
+        settings.RAZORPAY_KEY_SECRET.encode(), msg, hashlib.sha256
+    ).hexdigest()  # noqa: hmac.new is the correct stdlib function
+
+    if hmac.compare_digest(expected, razorpay_signature):
+        order.razorpay_payment_id = razorpay_payment_id
+        order.payment_status = 'paid'
+        order.status = 'confirmed'
+        order.save()
+        _save_cart(request, {})
+        return redirect('order_success', order_number=order.order_number)
+    else:
+        order.payment_status = 'failed'
+        order.save()
+        messages.error(request, 'Payment verification failed. Please contact support.')
+        return redirect('cart_detail')
+
+
+def order_success(request, order_number):
+    order = get_object_or_404(Order, order_number=order_number)
+    return render(request, 'order_success.html', {'order': order})
